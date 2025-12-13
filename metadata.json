@@ -1,0 +1,5 @@
+{
+  "name": "YourBreath",
+  "description": "A mindful breathing app for iOS and WatchOS featuring instant sessions, haptics, and privacy-focused design.",
+  "requestFramePermissions": []
+}
