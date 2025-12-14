@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // Ensures assets are linked correctly on GitHub Pages
+  // Default base is '/', which is correct for Cloudflare Pages
 });
