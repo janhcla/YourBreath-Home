@@ -360,7 +360,7 @@ const Footer = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) =
       
       <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-slate-500 text-sm">
-          Copyright 2025 by Jan H. Clausen
+          Copyright 2026 by Jan H. Clausen
         </p>
         <div className="flex gap-4">
           <div className="w-2 h-2 rounded-full bg-slate-700"></div>
