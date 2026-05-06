@@ -8,7 +8,7 @@
     font-style: normal;
     font-display: swap;
     font-weight: 300 800;
-    src: url("./node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+    src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
   }
 
   body {
