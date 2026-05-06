@@ -647,7 +647,7 @@ const Premium = () => (
                     "Voluntary Hyperventilation, Wim Hof Method",
                     "14-day programs for calm, energy, and resilience",
                     "HRV and resting heart rate insights",
-                    "YourBreath Advisor with coaching-style suggestions",
+                    "Personal insights and gentle nudges",
                     "No external data transfer"
                 ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-slate-300">
