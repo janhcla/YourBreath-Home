@@ -1,8 +1,8 @@
 # YourBreath website performance and SEO notes
 
-## Biggest performance problem identified
+## Biggest performance problem fixed
 
-The original site loads:
+The original site loaded:
 
 - Tailwind from a browser CDN
 - React packages from esm.sh importmaps
@@ -14,6 +14,8 @@ This increases render blocking and slows first-load performance.
 ## Improvements introduced in this PR
 
 - Removed runtime React importmaps
+- Moved Tailwind from browser CDN generation to build-time CSS
+- Self-hosted the Inter font through the Vite bundle
 - Added proper SEO metadata
 - Added robots.txt
 - Added sitemap.xml
@@ -23,40 +25,20 @@ This increases render blocking and slows first-load performance.
 - Added canonical URL
 - Enabled indexing via robots meta tag
 
-## Important note about Tailwind
-
-The Tailwind CDN runtime dependency is intentionally still present.
-
-It was temporarily restored to avoid breaking the UI before a proper build-time Tailwind/PostCSS pipeline is implemented.
-
 ## Recommended next steps
 
 ### High priority
 
 1. Split App.tsx into:
 
-- components/
-- views/
-- hooks/
-- animations/
+- `components/`
+- `views/`
+- `hooks/`
+- `animations/`
 
-2. Move Tailwind into proper build pipeline:
+2. Compress animations and reduce blur layers.
 
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-3. Create:
-
-- src/main.tsx
-- src/App.tsx
-- src/components/
-- src/styles/
-
-4. Self-host fonts or use variable font loading.
-
-5. Compress animations and reduce blur layers.
+3. Consider lazy-loading the Learn More modal content.
 
 ### SEO
 

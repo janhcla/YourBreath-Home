@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 300 800;
+    src: url("./node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+  }
+
+  body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation-duration: 300ms;
+    animation-fill-mode: both;
+  }
+
+  .fade-in {
+    animation-name: fade-in;
+  }
+
+  .zoom-in-95 {
+    --enter-scale: 0.95;
+    animation-name: fade-in, zoom-in;
+  }
+
+  .slide-in-from-top-5 {
+    --enter-translate-y: -1.25rem;
+    animation-name: fade-in, slide-in-from-top;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoom-in {
+    from {
+      transform: scale(var(--enter-scale, 0.95));
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slide-in-from-top {
+    from {
+      transform: translateY(var(--enter-translate-y, -1.25rem));
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
