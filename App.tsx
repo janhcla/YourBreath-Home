@@ -11,12 +11,13 @@ import {
   X,
   Download,
   Play,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 
 // --- Types ---
-type ViewState = 'home' | 'privacy' | 'terms';
-type Technique = 'box' | 'coherent' | 'cyclic';
+type ViewState = 'home' | 'privacy' | 'terms' | 'support';
+type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
 // --- Components ---
 
@@ -46,22 +47,22 @@ const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void 
       animationClass: "animate-box",
       shapeClass: "rounded-xl"
     },
+    fourSevenEight: {
+      title: "4-7-8 Breathing",
+      subtitle: "Sleep & Relaxation",
+      description: "A tranquilizing breath that acts as a natural relaxant for the nervous system. Best used before sleep or during high anxiety.",
+      steps: ["Inhale for 4s", "Hold for 7s", "Exhale for 8s", "Repeat cycle"],
+      color: "blue",
+      animationClass: "animate-box", // Reuse box animation for its hold phases
+      shapeClass: "rounded-full"
+    },
     coherent: {
-      title: "Coherent Breathing",
+      title: "Coherent (Premium)",
       subtitle: "Balance & HRV",
-      description: "Also known as Resonant Breathing. This rate (usually 5-6 breaths per minute) maximizes Heart Rate Variability (HRV) and balances the autonomic nervous system.",
+      description: "Also known as Resonant Breathing. This rate (usually 5-6 breaths per minute) maximizes Heart Rate Variability (HRV) and balances the autonomic nervous system. Unlocks with Premium alongside Periodic Sighing, Voluntary Hyperventilation, and Wim Hof.",
       steps: ["Inhale for 6s", "Exhale for 6s", "Continuous flow", "No pauses"],
       color: "purple",
       animationClass: "animate-coherent",
-      shapeClass: "rounded-full"
-    },
-    cyclic: {
-      title: "Cyclic Sigh",
-      subtitle: "Instant Relief",
-      description: "A pattern that emphasizes a double inhale followed by a long exhale. It physically pops open collapsed alveoli in the lungs to offload CO2 efficiently.",
-      steps: ["Inhale deeply", "Second short inhale", "Long exhale", "Repeat"],
-      color: "blue",
-      animationClass: "animate-cyclic",
       shapeClass: "rounded-full"
     }
   };
@@ -93,7 +94,27 @@ const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void 
           {/* Animation Container */}
           <div className="relative z-10 w-48 h-48 flex items-center justify-center">
              <div className={`w-32 h-32 bg-gradient-to-tr from-${current.color}-500 to-${current.color}-400 ${current.shapeClass} ${current.animationClass} shadow-[0_0_40px_rgba(0,0,0,0.3)] flex items-center justify-center`}>
-                <span className="text-white/90 font-bold text-lg tracking-widest uppercase opacity-0 animate-pulse">Breathe</span>
+                {activeTab === 'box' && (
+                  <>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-inhale">Inhale</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-hold1">Hold</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-exhale">Exhale</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-hold2">Hold</span>
+                  </>
+                )}
+                {activeTab === 'coherent' && (
+                  <>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-coherent-inhale">Inhale</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-coherent-exhale">Exhale</span>
+                  </>
+                )}
+                {activeTab === 'fourSevenEight' && (
+                  <>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-inhale">Inhale</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-hold1">Hold</span>
+                    <span className="absolute text-white/90 font-bold text-lg tracking-widest uppercase animate-text-box-exhale">Exhale</span>
+                  </>
+                )}
              </div>
              
              {/* Circular Guides for Coherent/Cyclic */}
@@ -233,6 +254,12 @@ const Navigation = ({
           >
             Terms
           </button>
+          <button 
+            onClick={() => onChangeView('support')} 
+            className={`text-sm font-medium transition-colors ${currentView === 'support' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            Support
+          </button>
           <a 
             href="#download" 
             className="bg-white text-dark-bg px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-brand-50 transition-colors shadow-lg shadow-white/5"
@@ -270,6 +297,12 @@ const Navigation = ({
           >
             Terms of Service
           </button>
+          <button 
+             onClick={() => { onChangeView('support'); setMobileMenuOpen(false); }}
+            className="text-left text-slate-300 hover:text-white py-2"
+          >
+            Support
+          </button>
           <a href="#download" className="bg-brand-600 text-white text-center py-3 rounded-lg font-semibold">
             Download for iOS
           </a>
@@ -305,10 +338,11 @@ const Footer = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) =
         </div>
 
         <div>
-          <h4 className="text-white font-semibold mb-4">Legal</h4>
+          <h4 className="text-white font-semibold mb-4">Legal & Help</h4>
           <ul className="space-y-2 text-sm text-slate-400">
             <li><button onClick={() => onChangeView('privacy')} className="hover:text-brand-400">Privacy Policy</button></li>
             <li><button onClick={() => onChangeView('terms')} className="hover:text-brand-400">Terms of Service</button></li>
+            <li><button onClick={() => onChangeView('support')} className="hover:text-brand-400">Support</button></li>
           </ul>
         </div>
 
@@ -345,15 +379,15 @@ const Hero = ({ onOpenLearnMore }: { onOpenLearnMore: () => void }) => (
 
     <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
       <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl">
-        Instant Calm, <br />
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-purple-400">
-          One Tap Away.
-        </span>
+        YourBreath
       </h1>
 
+      <p className="text-2xl md:text-3xl text-white font-medium mb-4 leading-relaxed max-w-3xl">
+        Start a calm breath on iPhone or Apple Watch before the day gets loud.
+      </p>
+
       <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed">
-        Start Box, Coherent, Cyclic Sigh and more sessions instantly. 
-        Guided by gentle visuals, sound, or haptics across iPhone and Apple Watch.
+        No account. No ads. No analytics. Your sessions stay with you.
       </p>
 
       <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto mt-4">
@@ -368,20 +402,18 @@ const Hero = ({ onOpenLearnMore }: { onOpenLearnMore: () => void }) => (
             className="h-[60px] w-auto"
           />
         </a>
-        <button 
-          onClick={onOpenLearnMore}
-          className="w-full sm:w-auto px-8 h-[60px] bg-white/5 text-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md flex items-center justify-center"
-        >
-          Learn More
-        </button>
+          <a href="#premium" onClick={(e) => { e.preventDefault(); document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth' }); }} className="w-full sm:w-auto px-8 h-[60px] bg-white/5 text-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md flex items-center justify-center">
+            See Premium
+          </a>
       </div>
 
       {/* Abstract Breathing Visual */}
       <div className="mt-20 relative w-64 h-64 flex items-center justify-center">
         <div className="absolute inset-0 bg-brand-500/20 rounded-full blur-xl animate-breathe"></div>
         <div className="absolute inset-4 bg-gradient-to-tr from-brand-500/30 to-purple-500/30 rounded-full blur-md animate-breathe" style={{ animationDelay: '1s' }}></div>
-        <div className="w-32 h-32 bg-gradient-to-br from-brand-400 to-purple-500 rounded-full shadow-2xl shadow-brand-500/50 flex items-center justify-center relative z-10">
-           <span className="text-white font-medium text-sm tracking-widest uppercase">Inhale</span>
+        <div className="w-32 h-32 bg-gradient-to-br from-brand-400 to-purple-500 rounded-full shadow-2xl shadow-brand-500/50 flex items-center justify-center relative z-10 animate-breathe">
+           <span className="absolute text-white font-medium text-sm tracking-widest uppercase animate-text-breathe-inhale">Inhale</span>
+           <span className="absolute text-white font-medium text-sm tracking-widest uppercase animate-text-breathe-exhale">Exhale</span>
         </div>
       </div>
     </div>
@@ -405,48 +437,36 @@ const Features = () => (
   <section id="features" className="py-24 bg-dark-bg relative">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Breathing Made Simple</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Free features that work right away</h2>
         <p className="text-slate-400 max-w-2xl mx-auto">
-          YourBreath strips away the complexity. No accounts, no clutter—just effective techniques to help you reset.
+          YourBreath is built for the first breath, not the first setup flow.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <FeatureCard 
-          icon={Wind} 
-          title="Instant Sessions" 
-          description="Start Box, Coherent, or Cyclic Sigh breathing in one tap. Customizable rhythms to match your lung capacity."
+          icon={Zap} 
+          title="One tap to calm" 
+          description="Start a 30-second Box Breathing session directly from the home screen."
           color="brand"
         />
         <FeatureCard 
-          icon={Watch} 
-          title="Apple Watch First" 
-          description="Enjoy fully featured sessions on your wrist. Quick 30-second resets launched directly from complications."
+          icon={Wind} 
+          title="Gentle routines" 
+          description="Box Breathing and 4-7-8 breathing with calm visual cues, sound, or haptics."
           color="purple"
         />
         <FeatureCard 
-          icon={ShieldCheck} 
-          title="Privacy by Default" 
-          description="No accounts, no tracking. Your health data stays on your device. We believe peace of mind starts with privacy."
+          icon={BarChart3} 
+          title="Mindful progress" 
+          description="See soft streaks, badges, and short reflections without guilt or gamification."
           color="green"
         />
         <FeatureCard 
-          icon={Zap} 
-          title="Haptic Guidance" 
-          description="Close your eyes and follow the gentle taps. Perfect for discreet calming moments in public or at work."
-          color="yellow"
-        />
-        <FeatureCard 
-          icon={BarChart3} 
-          title="Track Progress" 
-          description="Visualize your journey with mindful streak badges and session history. Stay motivated without the pressure."
+          icon={Watch} 
+          title="Apple Watch" 
+          description="Start short sessions from your watch and use haptic cues without looking at the screen."
           color="brand"
-        />
-        <FeatureCard 
-          icon={Heart} 
-          title="Health Integration" 
-          description="Seamlessly syncs mindful minutes and heart rate data with Apple Health to complete your wellness picture."
-          color="red"
         />
       </div>
     </div>
@@ -463,9 +483,9 @@ const BreathingTechniques = () => (
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Box Breathing */}
-        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-brand-500/30 transition-colors">
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-brand-500/30 transition-colors relative overflow-hidden">
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
              {/* Box Visual */}
             <div className="w-24 h-24 bg-brand-500 rounded-lg animate-box opacity-80"></div>
@@ -481,34 +501,84 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Box Breathing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Inhale, hold, exhale, hold. Equal duration for focus, stress reduction, and mental clarity. Used by elite performers.
+            Inhale, hold, exhale, hold. Equal duration for focus, stress reduction, and mental clarity. Free to use.
           </p>
-          <span className="text-brand-400 text-xs font-bold uppercase tracking-wider border border-brand-500/20 px-3 py-1 rounded-full">Focus</span>
+          <span className="text-brand-400 text-xs font-bold uppercase tracking-wider border border-brand-500/20 px-3 py-1 rounded-full">Free</span>
         </div>
 
-        {/* Coherent Breathing */}
-        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-purple-500/30 transition-colors">
+        {/* 4-7-8 Breathing */}
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-purple-500/30 transition-colors relative overflow-hidden">
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
-            <div className="w-24 h-24 bg-purple-500 rounded-full animate-coherent opacity-80 blur-md"></div>
-            <div className="w-24 h-24 bg-purple-400 rounded-full animate-coherent opacity-40 absolute"></div>
+             {/* 4-7-8 Visual */}
+             <div className="w-24 h-24 bg-purple-500 rounded-lg animate-box opacity-80"></div>
+             <div className="absolute inset-0 flex flex-col justify-between p-4 opacity-40">
+               <div className="flex justify-center text-xs font-mono uppercase tracking-widest">Hold 7s</div>
+               <div className="flex justify-between w-full text-xs font-mono uppercase tracking-widest px-2">
+                 <span className="-rotate-90">In 4s</span>
+                 <span className="rotate-90">Ex 8s</span>
+               </div>
+               <div className="flex justify-center text-xs font-mono uppercase tracking-widest">Wait</div>
+            </div>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3">Coherent</h3>
+          <h3 className="text-2xl font-bold text-white mb-3">4-7-8 Breathing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Smooth, continuous breaths. Balances the autonomic nervous system and synchronizes heart rate variability (HRV).
+            Inhale for 4s, hold for 7s, exhale for 8s. A natural tranquilizer for the nervous system. Free to use.
           </p>
-          <span className="text-purple-400 text-xs font-bold uppercase tracking-wider border border-purple-500/20 px-3 py-1 rounded-full">Balance</span>
+          <span className="text-purple-400 text-xs font-bold uppercase tracking-wider border border-purple-500/20 px-3 py-1 rounded-full">Free</span>
         </div>
 
-        {/* Cyclic Sigh */}
-        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-blue-500/30 transition-colors">
+        {/* Periodic Sighing */}
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-blue-500/30 transition-colors relative overflow-hidden">
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
             <div className="w-24 h-24 bg-blue-500 rounded-full animate-cyclic opacity-80"></div>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3">Cyclic Sigh</h3>
+          <h3 className="text-2xl font-bold text-white mb-3">Periodic Sighing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
             Double inhale, long exhale. The physiological sigh offloads CO2 and instantly reduces arousal and anxiety.
           </p>
-          <span className="text-blue-400 text-xs font-bold uppercase tracking-wider border border-blue-500/20 px-3 py-1 rounded-full">Relief</span>
+          <span className="text-blue-400 text-xs font-bold uppercase tracking-wider border border-blue-500/20 px-3 py-1 rounded-full">Premium</span>
+        </div>
+
+        {/* Coherent Breathing */}
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-violet-500/30 transition-colors relative overflow-hidden">
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
+            <div className="w-24 h-24 bg-violet-500 rounded-full animate-coherent opacity-80 blur-md"></div>
+            <div className="w-24 h-24 bg-violet-400 rounded-full animate-coherent opacity-40 absolute"></div>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">Coherent Breathing</h3>
+          <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            Smooth, continuous breaths. Balances the autonomic nervous system and synchronizes HRV. Unlocked in Premium.
+          </p>
+          <span className="text-violet-400 text-xs font-bold uppercase tracking-wider border border-violet-500/20 px-3 py-1 rounded-full">Premium</span>
+        </div>
+
+        {/* Voluntary Hyperventilation */}
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-orange-500/30 transition-colors relative overflow-hidden">
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
+            <div className="w-24 h-24 bg-orange-500 rounded-lg animate-pulse opacity-80 scale-110"></div>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">Voluntary Hyperventilation</h3>
+          <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            Increase alertness and energy with controlled rapid breathing. For practitioners looking for an edge.
+          </p>
+          <span className="text-orange-400 text-xs font-bold uppercase tracking-wider border border-orange-500/20 px-3 py-1 rounded-full">Premium</span>
+        </div>
+
+        {/* Wim Hof Method */}
+        <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-cyan-500/30 transition-colors relative overflow-hidden">
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
+            <div className="w-16 h-16 bg-cyan-500 rounded-full animate-ping opacity-80 absolute"></div>
+            <div className="w-24 h-24 bg-cyan-400 rounded-full opacity-40"></div>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">Wim Hof Method</h3>
+          <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            A combination of forced exhalations and breath holds. Increases resilience and helps you conquer the cold.
+          </p>
+          <span className="text-cyan-400 text-xs font-bold uppercase tracking-wider border border-cyan-500/20 px-3 py-1 rounded-full">Premium</span>
         </div>
       </div>
     </div>
@@ -527,8 +597,10 @@ const WatchShowcase = () => (
                 <div className="w-32 h-32 rounded-full border-4 border-brand-500/30 flex items-center justify-center relative mb-4">
                      <div className="w-24 h-24 bg-brand-500 rounded-full animate-breathe opacity-90"></div>
                 </div>
-                <div className="text-white font-semibold text-lg">Breathe In</div>
-                <div className="text-brand-400 text-sm mt-1">00:04</div>
+                <div className="relative h-7 w-full flex items-center justify-center">
+                  <div className="absolute text-white font-semibold text-lg animate-text-breathe-inhale">Inhale</div>
+                  <div className="absolute text-white font-semibold text-lg animate-text-breathe-exhale">Exhale</div>
+                </div>
                 
                 {/* Top status */}
                 <div className="absolute top-4 w-full flex justify-between px-6 text-[10px] text-slate-500">
@@ -545,37 +617,22 @@ const WatchShowcase = () => (
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-bold uppercase tracking-wider mb-6">
           On Your Wrist
         </div>
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Leave the phone behind.</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">iPhone and Apple Watch work quietly together</h2>
         <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-           YourBreath is designed to be fully functional on Apple Watch. Whether you're in a meeting or on a run, calm is just a complication tap away.
+           Install the watchOS app alongside the iPhone app. Routines, Premium status, and haptic settings stay in sync, so you can start breathing from your watch when your phone is away.
         </p>
-        <ul className="space-y-4">
-            {[
-                "Standalone functionality - no phone needed nearby",
-                "Haptic feedback for eyes-closed practice",
-                "Heart rate monitoring during sessions",
-                "Syncs automatically when back in range"
-            ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                    <div className="mt-1 w-5 h-5 rounded-full bg-brand-500/20 flex items-center justify-center text-brand-400 flex-shrink-0">
-                        <CheckCircle2 size={12} />
-                    </div>
-                    <span className="text-slate-300">{item}</span>
-                </li>
-            ))}
-        </ul>
       </div>
     </div>
   </section>
 );
 
 const Premium = () => (
-  <section className="py-24 relative">
+  <section id="premium" className="py-24 relative">
     <div className="absolute inset-0 bg-gradient-to-b from-dark-bg to-dark-card pointer-events-none"></div>
     <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
-      <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Unlock Lifetime Premium</h2>
+      <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Premium unlocks the deeper tools</h2>
       <p className="text-slate-400 text-lg mb-12 max-w-2xl mx-auto">
-        No subscriptions. No recurring charges. A single one-time payment unlocks advanced features forever.
+        A one-time unlock gives access to advanced techniques, longer routines, structured programs, and personal insights based on your local data.
       </p>
 
       <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
@@ -586,15 +643,16 @@ const Premium = () => (
             <h3 className="text-2xl font-bold text-white">Premium Features</h3>
             <ul className="space-y-4">
                 {[
-                    "Advanced techniques (Tummo, 4-7-8)",
-                    "Structured 14-day programs",
-                    "Coaching-style insights",
-                    "Extended session durations",
-                    "Custom routines builder"
+                    "Periodic Sighing, Coherent Breathing",
+                    "Voluntary Hyperventilation, Wim Hof Method",
+                    "14-day programs for calm, energy, and resilience",
+                    "HRV and resting heart rate insights",
+                    "YourBreath Advisor with coaching-style suggestions",
+                    "No external data transfer"
                 ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-slate-300">
-                        <CheckCircle2 className="text-purple-400" size={20} />
-                        {item}
+                    <li key={i} className="flex items-start gap-3 text-slate-300">
+                        <CheckCircle2 className="text-purple-400 mt-1 flex-shrink-0" size={20} />
+                        <span>{item}</span>
                     </li>
                 ))}
             </ul>
@@ -602,8 +660,8 @@ const Premium = () => (
           
           <div className="bg-white/5 rounded-2xl p-8 border border-white/5 flex flex-col items-center">
              <span className="text-slate-400 text-sm uppercase tracking-widest mb-2">One-Time Payment</span>
-             <div className="text-5xl font-bold text-white mb-2">$7.99</div>
-             <span className="text-purple-400 text-sm font-medium mb-6">Lifetime Access to ver. 1x</span>
+             <div className="text-5xl font-bold text-white mb-2">Unlock</div>
+             <span className="text-purple-400 text-sm font-medium mb-6">Buy once and keep Premium for version 1.x.</span>
              <div className="flex flex-col items-center gap-1 mt-4">
                 <span className="text-white font-bold text-lg">In-app purchase.</span>
                 <span className="text-brand-400 font-bold text-lg">Free 7-day trial</span>
@@ -611,6 +669,23 @@ const Premium = () => (
           </div>
         </div>
       </div>
+    </div>
+  </section>
+);
+
+const PrivacyFeature = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
+  <section className="py-24 bg-dark-bg border-t border-white/5">
+    <div className="max-w-4xl mx-auto px-6 text-center">
+      <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Privacy is a product feature</h2>
+      <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+        Your sessions, reminders, reflections, and progress insights are stored locally on iPhone and Apple Watch. HealthKit is optional. iCloud sync is controlled by your Apple ID account, and the developer cannot see your data.
+      </p>
+      <button 
+        onClick={() => { onChangeView('privacy'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        className="inline-flex items-center gap-2 text-brand-400 font-semibold hover:text-brand-300 transition-colors"
+      >
+        Read Privacy Policy
+      </button>
     </div>
   </section>
 );
@@ -644,28 +719,28 @@ const DownloadCTA = () => (
 // --- Privacy Policy Component (Provided Text) ---
 const PrivacyPolicyView = () => (
   <div className="pt-32 pb-20 max-w-3xl mx-auto px-6 animate-in fade-in duration-500">
-    <h1 className="text-4xl font-bold text-white mb-8">Privacy Policy — YourBreath</h1>
+    <h1 className="text-4xl font-bold text-white mb-8">Privacy Policy</h1>
     
     <div className="prose prose-invert prose-slate max-w-none">
       <div className="bg-dark-card p-6 rounded-2xl border border-white/10 mb-8">
-        <p className="font-semibold text-white">Effective date: <span className="text-slate-400 font-normal">December 1, 2025</span></p>
+        <p className="font-semibold text-white">Effective date: <span className="text-slate-400 font-normal">1.5.2026</span></p>
       </div>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">1. About YourBreath</h2>
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">About YourBreath</h2>
         <p className="text-slate-400 leading-relaxed">
-          YourBreath is a wellness app that guides breathing exercises on iPhone and Apple Watch. The app works entirely on-device, without accounts, analytics, or external services.
+          YourBreath is a wellness app that guides breathing exercises on iPhone and Apple Watch. The app works on-device, without accounts, advertising SDKs, or third-party analytics.
         </p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">2. Data We Collect and How It’s Used</h2>
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Data We Collect and How It Is Used</h2>
         <ul className="list-disc pl-5 space-y-4 text-slate-400">
           <li>
             <strong className="text-white">Breathing sessions and progress:</strong> Session timestamps, duration, exercise type, completion status, and progress metrics stay on your device to power streaks, recommendations, and history views.
           </li>
           <li>
-            <strong className="text-white">Heart-related metrics (optional):</strong> If you opt in, the app reads and writes HealthKit data such as mindful sessions, heart rate, resting heart rate, and heart rate variability to show trends and log sessions. Metadata may include exercise type, duration, cycles completed, and biometrics recorded during a session. Health data never leaves your device and is only visible to you in the Health app and within YourBreath.
+            <strong className="text-white">Heart-related metrics, optional:</strong> If you opt in, the app reads and writes HealthKit data such as mindful sessions, heart rate, resting heart rate, and heart rate variability to show trends and log sessions. Health data never leaves your device and is only visible to you in the Health app and within YourBreath.
           </li>
           <li>
             <strong className="text-white">Notification preferences:</strong> Reminder identifiers and scheduling choices are stored locally to deliver optional practice reminders and weekly reflections.
@@ -673,81 +748,43 @@ const PrivacyPolicyView = () => (
         </ul>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">3. Sources of Data</h2>
-        <ul className="list-disc pl-5 space-y-4 text-slate-400">
-          <li>
-            <strong className="text-white">Information you generate in the app:</strong> Breathing sessions, preferences, and progress history are created by your use of the app and stored locally (with optional iCloud sync you control at the OS level).
-          </li>
-          <li>
-            <strong className="text-white">Health data (only with permission):</strong> HealthKit data is accessed or written only after you grant permission and is limited to mindful sessions, heart rate, resting heart rate, and heart rate variability.
-          </li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">4. Data Storage and Sync</h2>
-        <ul className="list-disc pl-5 space-y-4 text-slate-400">
-          <li>
-            <strong className="text-white">On-device storage:</strong> Session history, settings, and notification schedules are stored locally using Core Data and UserDefaults.
-          </li>
-          <li>
-            <strong className="text-white">iCloud (optional):</strong> If you enable iCloud for YourBreath, Core Data can mirror to your iCloud account via CloudKit so your history stays available across devices. This uses Apple’s iCloud container <code>iCloud.jhc.YourBreath</code>; you can disable iCloud syncing in iOS settings. Data remains encrypted and under your Apple ID—YourBreath’s developers cannot access it.
-          </li>
-          <li>
-            <strong className="text-white">Health app:</strong> HealthKit writes and reads are stored in your Health app per Apple’s rules and are under your control.
-          </li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">5. Data Sharing</h2>
-        <ul className="list-disc pl-5 space-y-4 text-slate-400">
-          <li>
-            <strong className="text-white">No sharing with developers or third parties:</strong> YourBreath does not transmit, sell, or share any personal data. Developers cannot access your on-device data or iCloud records.
-          </li>
-          <li>
-            <strong className="text-white">Health data:</strong> Remains within HealthKit and your device; no transmission to external services.
-          </li>
-          <li>
-            <strong className="text-white">iCloud:</strong> If enabled, Apple’s iCloud service transports and stores your Core Data records under Apple’s privacy and security protections; no one else—including the developer—can access your records.
-          </li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">6. Permissions</h2>
-        <ul className="list-disc pl-5 space-y-4 text-slate-400">
-          <li>
-            <strong className="text-white">HealthKit:</strong> Requested to read/write mindful sessions and heart metrics to log and display your progress. Access is limited to the specific data types you approve.
-          </li>
-          <li>
-            <strong className="text-white">Notifications:</strong> Requested to send optional daily reminders, weekly reflections, and gentle nudges; you can change this anytime in Settings.
-          </li>
-          <li>
-            <strong className="text-white">iCloud:</strong> Uses your Apple ID for CloudKit sync if you enable iCloud for the app; otherwise all data stays on-device.
-          </li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">7. Children’s Privacy</h2>
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Storage and Sync</h2>
         <p className="text-slate-400 leading-relaxed">
-          YourBreath is intended for general audiences and is not directed to children under 13. If you are a parent or guardian and believe a child has provided data, contact us to request deletion.
+          Session history, settings, and notification schedules are stored locally using Core Data and UserDefaults. If you enable iCloud for YourBreath, Core Data can mirror records through Apple CloudKit under your Apple ID. The developer cannot access those records.
         </p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">8. Security</h2>
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Data Sharing</h2>
         <p className="text-slate-400 leading-relaxed">
-          Data is protected using Apple’s platform security. HealthKit data stays within the Health store; Core Data records are stored locally with optional iCloud encryption handled by Apple. We minimize collection to what is needed for breathing guidance and progress features.
+          YourBreath does not transmit, sell, or share personal data with developers or third parties. HealthKit data remains within HealthKit and your device. Optional iCloud sync is handled by Apple under your Apple ID.
         </p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">9. Your Choices and Controls</h2>
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Permissions</h2>
+        <ul className="list-disc pl-5 space-y-2 text-slate-400">
+          <li>HealthKit is requested only for mindful sessions and selected heart metrics.</li>
+          <li>Notifications are requested for optional reminders and weekly reflections.</li>
+          <li>iCloud sync is controlled in iOS settings.</li>
+        </ul>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Your Choices</h2>
+        <ul className="list-disc pl-5 space-y-2 text-slate-400">
+          <li>Manage Health permissions in iOS Settings {"->"} Health {"->"} Data Access & Devices.</li>
+          <li>Manage notifications in Settings {"->"} Notifications {"->"} YourBreath.</li>
+          <li>Disable iCloud sync in Settings {"->"} [your name] {"->"} iCloud {"->"} Show All {"->"} YourBreath.</li>
+          <li>Delete app data by deleting the app and removing related Health records or iCloud data if enabled.</li>
+        </ul>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Contact</h2>
         <p className="text-slate-400 leading-relaxed">
-          Manage Health permissions in iOS Settings → Health → Data Access
+          For privacy questions, access or deletion requests, or support, contact <a href="mailto:aloe.08.slaenge@icloud.com" className="text-brand-400 hover:text-brand-300">aloe.08.slaenge@icloud.com</a>.
         </p>
       </section>
     </div>
@@ -848,6 +885,89 @@ const TermsOfServiceView = () => (
   </div>
 );
 
+const SupportView = () => (
+  <div className="pt-32 pb-20 max-w-3xl mx-auto px-6 animate-in fade-in duration-500">
+    <h1 className="text-4xl font-bold text-white mb-8">Support</h1>
+    
+    <div className="prose prose-invert prose-slate max-w-none">
+      <p className="text-slate-400 mb-8 leading-relaxed text-lg">
+        Find help with YourBreath, Premium, refunds, HealthKit, and Apple Watch.
+      </p>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Get started quickly</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Tap Breathe now to start a 30-second Box Breathing session. Long-press to choose routines, duration, and cycles.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">What is free?</h2>
+        <p className="text-slate-400 leading-relaxed">
+          The free version includes quick breathing, core routines, gentle cues, streaks, badges, and local progress.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">What does Premium unlock?</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Premium unlocks advanced techniques, longer routines, 14-day programs, HRV and resting heart rate insights, and YourBreath Advisor. It is a one-time unlock for version 1.x.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">How do I restore Premium?</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Open the Premium screen in the app and tap Restore Purchases. Use the same Apple ID that made the purchase.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">How do I request a refund?</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Apple handles App Store refunds. Go to <a href="https://reportaproblem.apple.com/" target="_blank" rel="noreferrer" className="text-brand-400 hover:text-brand-300">reportaproblem.apple.com</a>, sign in with your Apple ID, and select the YourBreath purchase.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">How does Apple Watch work?</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Install YourBreath on Apple Watch from the Watch app on iPhone. Open the watch app at least once. Premium status, routines, and haptic settings sync automatically when the devices are nearby.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">HealthKit and HRV</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Health access is optional. If you allow it, YourBreath can read and write mindful sessions, heart rate, resting heart rate, and HRV to show your own trends.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">My data</h2>
+        <p className="text-slate-400 leading-relaxed">
+          YourBreath does not use accounts, ads, or analytics. Sessions and settings are stored locally, and optional iCloud sync is controlled by Apple.
+        </p>
+      </section>
+
+      <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Contact support</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Fill out the form. The form uses your email app.
+        </p>
+        <form action="mailto:support@yourbreath.example" method="post" encType="text/plain" className="mt-6 flex flex-col gap-4">
+          <input type="text" name="name" placeholder="Your Name" className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required />
+          <input type="email" name="email" placeholder="Your Email" className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required />
+          <textarea name="message" placeholder="Your Message" rows={4} className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required></textarea>
+          <button type="submit" className="bg-brand-600 hover:bg-brand-500 text-white font-semibold py-2 px-6 rounded-lg self-start transition-colors">
+            Send Message
+          </button>
+        </form>
+      </section>
+    </div>
+  </div>
+);
+
 // --- Main App Component ---
 
 const App = () => {
@@ -865,6 +985,7 @@ const App = () => {
           <BreathingTechniques />
           <WatchShowcase />
           <Premium />
+          <PrivacyFeature onChangeView={setCurrentView} />
           <DownloadCTA />
         </main>
       )}
@@ -872,6 +993,8 @@ const App = () => {
       {currentView === 'privacy' && <PrivacyPolicyView />}
       
       {currentView === 'terms' && <TermsOfServiceView />}
+      
+      {currentView === 'support' && <SupportView />}
       
       <LearnMoreModal open={showLearnMore} onClose={() => setShowLearnMore(false)} />
       
