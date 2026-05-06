@@ -1,26 +1,33 @@
 # YourBreath website performance and SEO notes
 
-## Biggest performance problem fixed
+## Biggest performance problem identified
 
-The original site loaded:
+The original site loads:
 
 - Tailwind from a browser CDN
 - React packages from esm.sh importmaps
 - fonts directly during render
+- a very large single App.tsx file
 
-This creates slow first-load performance and increases render blocking.
+This increases render blocking and slows first-load performance.
 
-## Improvements introduced
+## Improvements introduced in this PR
 
 - Removed runtime React importmaps
-- Removed Tailwind CDN runtime dependency
 - Added proper SEO metadata
 - Added robots.txt
 - Added sitemap.xml
 - Added structured data (Schema.org)
 - Added OpenGraph and Twitter metadata
+- Added social preview image
 - Added canonical URL
 - Enabled indexing via robots meta tag
+
+## Important note about Tailwind
+
+The Tailwind CDN runtime dependency is intentionally still present.
+
+It was temporarily restored to avoid breaking the UI before a proper build-time Tailwind/PostCSS pipeline is implemented.
 
 ## Recommended next steps
 
