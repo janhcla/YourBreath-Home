@@ -19,6 +19,9 @@ import {
 type ViewState = 'home' | 'privacy' | 'terms' | 'support';
 type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
+const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
+const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
+
 // --- Components ---
 
 const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -397,7 +400,7 @@ const Hero = ({ onOpenLearnMore }: { onOpenLearnMore: () => void }) => (
           aria-label="Download on the App Store"
         >
           <img 
-            src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+            src={APP_STORE_BADGE_SRC}
             alt="Download on the App Store" 
             className="h-[60px] w-auto"
           />
@@ -705,7 +708,7 @@ const DownloadCTA = () => (
           aria-label="Download on the App Store"
         >
           <img 
-            src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+            src={APP_STORE_BADGE_SRC}
             alt="Download on the App Store" 
             className="h-[60px] w-auto"
           />
@@ -784,7 +787,7 @@ const PrivacyPolicyView = () => (
       <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
         <h2 className="text-xl font-bold text-white mb-3">Contact</h2>
         <p className="text-slate-400 leading-relaxed">
-          For privacy questions, access or deletion requests, or support, contact <a href="mailto:aloe.08.slaenge@icloud.com" className="text-brand-400 hover:text-brand-300">aloe.08.slaenge@icloud.com</a>.
+          For privacy questions, access or deletion requests, or support, contact <a href={`mailto:${SUPPORT_EMAIL}`} className="text-brand-400 hover:text-brand-300">{SUPPORT_EMAIL}</a>.
         </p>
       </section>
     </div>
@@ -878,7 +881,7 @@ const TermsOfServiceView = () => (
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-white mb-4">9. Contact Us</h2>
         <p className="text-slate-400 leading-relaxed">
-          If you have any questions about these Terms, please contact us at: <a href="mailto:support@yourbreath.example" className="text-brand-400 hover:text-brand-300">support@yourbreath.example</a>
+          If you have any questions about these Terms, please contact us at: <a href={`mailto:${SUPPORT_EMAIL}`} className="text-brand-400 hover:text-brand-300">{SUPPORT_EMAIL}</a>
         </p>
       </section>
     </div>
@@ -955,7 +958,7 @@ const SupportView = () => (
         <p className="text-slate-400 leading-relaxed">
           Fill out the form. The form uses your email app.
         </p>
-        <form action="mailto:support@yourbreath.example" method="post" encType="text/plain" className="mt-6 flex flex-col gap-4">
+        <form action={`mailto:${SUPPORT_EMAIL}`} method="post" encType="text/plain" className="mt-6 flex flex-col gap-4">
           <input type="text" name="name" placeholder="Your Name" className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required />
           <input type="email" name="email" placeholder="Your Email" className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required />
           <textarea name="message" placeholder="Your Message" rows={4} className="bg-dark-bg border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-500" required></textarea>

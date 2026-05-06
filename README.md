@@ -1,20 +1,26 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# YourBreath website
 
-# Run and deploy your AI Studio app
+Marketing, privacy, terms, and support site for YourBreath.
 
-This contains everything you need to run your app locally.
+Production: https://yourbreath.pages.dev
 
-View your app in AI Studio: https://ai.studio/apps/1bd6cffc-9f54-45e3-816c-da8296343c70
+Hosting: Cloudflare Pages, synced directly from GitHub.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+Prerequisite: Node.js 22.12.0 or newer. The repository includes `.nvmrc` for local and Cloudflare Pages builds.
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+2. Start the Vite dev server:
+   ```bash
+   npm run dev
+   ```
+3. Build the production bundle:
+   ```bash
+   npm run build
+   ```
+
+Cloudflare Pages should use `npm run build` as the build command and `dist` as the output directory.
