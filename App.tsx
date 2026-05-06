@@ -734,7 +734,7 @@ const PrivacyPolicyView = () => (
       </section>
 
       <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
-        <h2 className="text-xl font-bold text-white mb-3">Data We Collect and How It Is Used</h2>
+        <h2 className="text-xl font-bold text-white mb-3">Data The App Collects and How It Is Used</h2>
         <ul className="list-disc pl-5 space-y-4 text-slate-400">
           <li>
             <strong className="text-white">Breathing sessions and progress:</strong> Session timestamps, duration, exercise type, completion status, and progress metrics stay on your device to power streaks, recommendations, and history views.
