@@ -16,15 +16,70 @@ import {
 } from 'lucide-react';
 
 // --- Types ---
-type ViewState = 'home' | 'privacy' | 'terms' | 'support';
+type ViewState = 'home' | 'privacy' | 'terms' | 'support' | 'availability';
 type Technique = 'box' | 'fourSevenEight' | 'coherent';
+type AppStoreAvailabilityMode = 'comingSoon' | 'live';
 
 const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
+const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
+// Change this to "live" once Apple has published the App Store listing.
+const APP_STORE_AVAILABILITY_MODE = 'comingSoon' as AppStoreAvailabilityMode;
+const IS_APP_STORE_LIVE = APP_STORE_AVAILABILITY_MODE === 'live';
 
 // --- Components ---
 
-const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const AppStoreCTA = ({
+  children,
+  className,
+  ariaLabel,
+  onOpenAvailability,
+  onBeforeOpenAvailability
+}: {
+  children: React.ReactNode;
+  className?: string;
+  ariaLabel?: string;
+  onOpenAvailability: () => void;
+  onBeforeOpenAvailability?: () => void;
+}) => {
+  if (IS_APP_STORE_LIVE) {
+    return (
+      <a
+        href={APP_STORE_URL}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+        aria-label={ariaLabel}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        onBeforeOpenAvailability?.();
+        onOpenAvailability();
+      }}
+      className={className}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </button>
+  );
+};
+
+const LearnMoreModal = ({
+  open,
+  onClose,
+  onOpenAppStoreAvailability
+}: {
+  open: boolean;
+  onClose: () => void;
+  onOpenAppStoreAvailability: () => void;
+}) => {
   const [activeTab, setActiveTab] = useState<Technique>('box');
 
   useEffect(() => {
@@ -187,13 +242,13 @@ const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void 
               >
                 Close
               </button>
-              <a 
-                href="#download"
-                onClick={onClose} 
+              <AppStoreCTA
+                onOpenAvailability={onOpenAppStoreAvailability}
+                onBeforeOpenAvailability={onClose}
                 className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-${current.color}-600 hover:bg-${current.color}-500 text-white font-semibold transition-colors shadow-lg shadow-${current.color}-500/20 text-center`}
               >
                 Start Session
-              </a>
+              </AppStoreCTA>
             </div>
           </div>
         </div>
@@ -204,10 +259,12 @@ const LearnMoreModal = ({ open, onClose }: { open: boolean; onClose: () => void 
 
 const Navigation = ({ 
   currentView, 
-  onChangeView 
+  onChangeView,
+  onOpenAppStoreAvailability
 }: { 
   currentView: ViewState; 
-  onChangeView: (view: ViewState) => void 
+  onChangeView: (view: ViewState) => void;
+  onOpenAppStoreAvailability: () => void;
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -263,12 +320,12 @@ const Navigation = ({
           >
             Support
           </button>
-          <a 
-            href="#download" 
+          <AppStoreCTA
+            onOpenAvailability={onOpenAppStoreAvailability}
             className="bg-white text-dark-bg px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-brand-50 transition-colors shadow-lg shadow-white/5"
           >
             Download App
-          </a>
+          </AppStoreCTA>
         </div>
 
         {/* Mobile Toggle */}
@@ -306,16 +363,26 @@ const Navigation = ({
           >
             Support
           </button>
-          <a href="#download" className="bg-brand-600 text-white text-center py-3 rounded-lg font-semibold">
+          <AppStoreCTA
+            onOpenAvailability={onOpenAppStoreAvailability}
+            onBeforeOpenAvailability={() => setMobileMenuOpen(false)}
+            className="bg-brand-600 text-white text-center py-3 rounded-lg font-semibold"
+          >
             Download for iOS
-          </a>
+          </AppStoreCTA>
         </div>
       )}
     </nav>
   );
 };
 
-const Footer = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
+const Footer = ({
+  onChangeView,
+  onOpenAppStoreAvailability
+}: {
+  onChangeView: (view: ViewState) => void;
+  onOpenAppStoreAvailability: () => void;
+}) => (
   <footer className="bg-dark-bg border-t border-white/5 pt-16 pb-8">
     <div className="max-w-7xl mx-auto px-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -351,10 +418,13 @@ const Footer = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) =
 
         <div>
           <h4 className="text-white font-semibold mb-4">Download</h4>
-          <a href="#download" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors border border-white/5">
+          <AppStoreCTA
+            onOpenAvailability={onOpenAppStoreAvailability}
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors border border-white/5"
+          >
             <Download size={16} />
             <span className="text-sm">App Store</span>
-          </a>
+          </AppStoreCTA>
         </div>
       </div>
       
@@ -372,7 +442,13 @@ const Footer = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) =
   </footer>
 );
 
-const Hero = ({ onOpenLearnMore }: { onOpenLearnMore: () => void }) => (
+const Hero = ({
+  onOpenLearnMore,
+  onOpenAppStoreAvailability
+}: {
+  onOpenLearnMore: () => void;
+  onOpenAppStoreAvailability: () => void;
+}) => (
   <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
     {/* Background Elements */}
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
@@ -394,17 +470,17 @@ const Hero = ({ onOpenLearnMore }: { onOpenLearnMore: () => void }) => (
       </p>
 
       <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto mt-4">
-        <a 
-          href="#" 
+        <AppStoreCTA
+          onOpenAvailability={onOpenAppStoreAvailability}
           className="inline-block transition-all hover:scale-105 hover:opacity-90 shadow-xl shadow-brand-500/10"
-          aria-label="Download on the App Store"
+          ariaLabel="Download on the App Store"
         >
           <img 
             src={APP_STORE_BADGE_SRC}
             alt="Download on the App Store" 
             className="h-[60px] w-auto"
           />
-        </a>
+        </AppStoreCTA>
           <a href="#premium" onClick={(e) => { e.preventDefault(); document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth' }); }} className="w-full sm:w-auto px-8 h-[60px] bg-white/5 text-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md flex items-center justify-center">
             See Premium
           </a>
@@ -693,30 +769,85 @@ const PrivacyFeature = ({ onChangeView }: { onChangeView: (view: ViewState) => v
   </section>
 );
 
-const DownloadCTA = () => (
+const DownloadCTA = ({
+  onOpenAppStoreAvailability
+}: {
+  onOpenAppStoreAvailability: () => void;
+}) => (
   <section id="download" className="py-24 bg-gradient-to-b from-dark-card to-dark-bg border-t border-white/5">
     <div className="max-w-4xl mx-auto px-6 text-center">
-      <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">Start Breathing Better Today</h2>
+      <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">Coming to the App Store soon</h2>
       <p className="text-slate-400 text-lg mb-10 max-w-xl mx-auto">
-        Join thousands who have found their calm. One simple app for your pocket and your wrist.
+        YourBreath is in final review with Apple. The download button will point to the live App Store listing as soon as it is published.
       </p>
       
       <div className="flex justify-center items-center gap-6">
-        <a 
-          href="#" 
+        <AppStoreCTA
+          onOpenAvailability={onOpenAppStoreAvailability}
           className="inline-block transition-all hover:scale-105 hover:opacity-90"
-          aria-label="Download on the App Store"
+          ariaLabel="Download on the App Store"
         >
           <img 
             src={APP_STORE_BADGE_SRC}
             alt="Download on the App Store" 
             className="h-[60px] w-auto"
           />
-        </a>
+        </AppStoreCTA>
       </div>
       <p className="mt-8 text-sm text-slate-500">Requires iOS 26.0 or later and watchOS 26.0 or later.</p>
     </div>
   </section>
+);
+
+const AppStoreAvailabilityView = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
+  <div className="pt-32 pb-20 max-w-4xl mx-auto px-6 animate-in fade-in duration-500">
+    <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 text-brand-300 text-sm font-semibold border border-brand-500/20">
+      App Store release
+    </div>
+
+    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+      Coming to the App Store soon
+    </h1>
+
+    <p className="text-xl text-slate-300 leading-relaxed mb-10 max-w-3xl">
+      YourBreath has been submitted for final Apple review. Until the public App Store listing is live, download buttons on this site lead here instead of sending you to a page that may not be available yet.
+    </p>
+
+    <div className="grid md:grid-cols-2 gap-6 mb-10">
+      <section className="bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">What happens next</h2>
+        <p className="text-slate-400 leading-relaxed">
+          Once Apple approves and publishes the app, the same buttons will open the App Store listing directly.
+        </p>
+      </section>
+
+      <section className="bg-dark-card p-6 rounded-2xl border border-white/5">
+        <h2 className="text-xl font-bold text-white mb-3">Prepared App Store link</h2>
+        <p className="text-slate-400 leading-relaxed break-words">
+          {APP_STORE_URL}
+        </p>
+      </section>
+    </div>
+
+    <div className="flex flex-col sm:flex-row gap-4">
+      <button
+        type="button"
+        onClick={() => {
+          onChangeView('home');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-colors"
+      >
+        Back to YourBreath
+      </button>
+      <a
+        href={`mailto:${SUPPORT_EMAIL}`}
+        className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-semibold transition-colors border border-white/10 text-center"
+      >
+        Contact support
+      </a>
+    </div>
+  </div>
 );
 
 // --- Privacy Policy Component (Provided Text) ---
@@ -976,20 +1107,32 @@ const SupportView = () => (
 const App = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
   const [showLearnMore, setShowLearnMore] = useState(false);
+  const openAppStoreAvailability = () => {
+    setShowLearnMore(false);
+    setCurrentView('availability');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-dark-bg text-slate-50 selection:bg-brand-500/30 font-sans">
-      <Navigation currentView={currentView} onChangeView={setCurrentView} />
+      <Navigation
+        currentView={currentView}
+        onChangeView={setCurrentView}
+        onOpenAppStoreAvailability={openAppStoreAvailability}
+      />
       
       {currentView === 'home' && (
         <main className="animate-in fade-in duration-500">
-          <Hero onOpenLearnMore={() => setShowLearnMore(true)} />
+          <Hero
+            onOpenLearnMore={() => setShowLearnMore(true)}
+            onOpenAppStoreAvailability={openAppStoreAvailability}
+          />
           <Features />
           <BreathingTechniques />
           <WatchShowcase />
           <Premium />
           <PrivacyFeature onChangeView={setCurrentView} />
-          <DownloadCTA />
+          <DownloadCTA onOpenAppStoreAvailability={openAppStoreAvailability} />
         </main>
       )}
       
@@ -998,10 +1141,19 @@ const App = () => {
       {currentView === 'terms' && <TermsOfServiceView />}
       
       {currentView === 'support' && <SupportView />}
+
+      {currentView === 'availability' && <AppStoreAvailabilityView onChangeView={setCurrentView} />}
       
-      <LearnMoreModal open={showLearnMore} onClose={() => setShowLearnMore(false)} />
+      <LearnMoreModal
+        open={showLearnMore}
+        onClose={() => setShowLearnMore(false)}
+        onOpenAppStoreAvailability={openAppStoreAvailability}
+      />
       
-      <Footer onChangeView={setCurrentView} />
+      <Footer
+        onChangeView={setCurrentView}
+        onOpenAppStoreAvailability={openAppStoreAvailability}
+      />
     </div>
   );
 };
