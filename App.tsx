@@ -110,6 +110,22 @@ const AppStoreCTA = ({
   </a>
 );
 
+const ProductHuntBadge = () => (
+  <a
+    href="https://www.producthunt.com/products/yourbreath?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-yourbreath"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block transition-opacity hover:opacity-90"
+  >
+    <img
+      alt="YourBreath - Calm breathing on iPhone and Apple Watch | Product Hunt"
+      width="250"
+      height="54"
+      src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1146992&theme=dark&t=1778772218524"
+    />
+  </a>
+);
+
 const LearnMoreModal = ({
   open,
   onClose
@@ -830,7 +846,7 @@ const DownloadCTA = () => (
         Start calm breathing sessions on iPhone and Apple Watch with no account, no ads, and no analytics.
       </p>
       
-      <div className="flex justify-center items-center gap-6">
+      <div className="flex flex-col items-center justify-center gap-5">
         <AppStoreCTA
           className="inline-block transition-all hover:scale-105 hover:opacity-90"
           ariaLabel="Download on the App Store"
@@ -841,6 +857,7 @@ const DownloadCTA = () => (
             className="h-[60px] w-auto"
           />
         </AppStoreCTA>
+        <ProductHuntBadge />
       </div>
       <p className="mt-8 text-sm text-slate-500">Requires iOS 26.0 or later and watchOS 26.0 or later.</p>
     </div>
