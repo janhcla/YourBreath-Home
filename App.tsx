@@ -12,16 +12,81 @@ import {
   Download,
   Play,
   Info,
-  Lock
+  Lock,
+  FileText,
+  HelpCircle
 } from 'lucide-react';
 
 // --- Types ---
-type ViewState = 'home' | 'privacy' | 'terms' | 'support';
+type ViewState = 'home' | 'about' | 'press' | 'apple-watch' | 'private-breathing-app' | 'no-subscription' | 'breathing-techniques' | 'privacy' | 'terms' | 'support';
 type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
 const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
 const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
+
+const VIEW_PATHS: Record<ViewState, string> = {
+  home: '/',
+  about: '/about',
+  press: '/press',
+  'apple-watch': '/apple-watch-breathing-app',
+  'private-breathing-app': '/private-breathing-app',
+  'no-subscription': '/breathing-app-without-subscription',
+  'breathing-techniques': '/breathing-techniques',
+  privacy: '/privacy',
+  terms: '/terms',
+  support: '/support'
+};
+
+const PATH_VIEWS = Object.entries(VIEW_PATHS).reduce<Record<string, ViewState>>((acc, [view, path]) => {
+  acc[path] = view as ViewState;
+  return acc;
+}, {});
+
+const getViewFromPath = (pathname: string): ViewState => PATH_VIEWS[pathname.replace(/\/$/, '') || '/'] ?? 'home';
+
+const VIEW_META: Record<ViewState, { title: string; description: string }> = {
+  home: {
+    title: "YourBreath - Private breathing app for iPhone and Apple Watch",
+    description: "Start a calm breath on iPhone or Apple Watch before the day gets loud. No account. No ads. No analytics."
+  },
+  about: {
+    title: "About YourBreath - Private breathing app by Jan H. Clausen",
+    description: "YourBreath is built independently by Danish general practitioner and app developer Jan H. Clausen."
+  },
+  press: {
+    title: "Press - YourBreath",
+    description: "Press information and key facts for YourBreath, a private breathing app for iPhone and Apple Watch."
+  },
+  'apple-watch': {
+    title: "Breathing app for Apple Watch - YourBreath",
+    description: "Start short breathing sessions from your Apple Watch with calm visual cues, sound and haptics."
+  },
+  'private-breathing-app': {
+    title: "Private breathing app with no account, ads or analytics - YourBreath",
+    description: "YourBreath is a private breathing app with no account, no ads and no analytics."
+  },
+  'no-subscription': {
+    title: "Breathing app without subscription pressure - YourBreath",
+    description: "YourBreath is free to try and offers Premium as a one-time unlock instead of a subscription."
+  },
+  'breathing-techniques': {
+    title: "Breathing techniques - YourBreath",
+    description: "Learn about the guided breathing patterns in YourBreath, including Box Breathing and 4-7-8 breathing."
+  },
+  privacy: {
+    title: "Privacy Policy - YourBreath",
+    description: "YourBreath works without accounts, ads or third-party analytics. Read the privacy policy."
+  },
+  terms: {
+    title: "Terms of Service - YourBreath",
+    description: "Terms of Service for the YourBreath iPhone and Apple Watch app."
+  },
+  support: {
+    title: "Support - YourBreath",
+    description: "Support for YourBreath, Premium, refunds, HealthKit and Apple Watch."
+  }
+};
 
 // --- Components ---
 
@@ -80,7 +145,7 @@ const LearnMoreModal = ({
     fourSevenEight: {
       title: "4-7-8 Breathing",
       subtitle: "Sleep & Relaxation",
-      description: "A tranquilizing breath that acts as a natural relaxant for the nervous system. Best used before sleep or during high anxiety.",
+      description: "A slow breathing pattern often used for relaxation and winding down.",
       steps: ["Inhale for 4s", "Hold for 7s", "Exhale for 8s", "Repeat cycle"],
       color: "blue",
       animationClass: "animate-box", // Reuse box animation for its hold phases
@@ -89,7 +154,7 @@ const LearnMoreModal = ({
     coherent: {
       title: "Coherent (Premium)",
       subtitle: "Balance & HRV",
-      description: "Also known as Resonant Breathing. This rate (usually 5-6 breaths per minute) maximizes Heart Rate Variability (HRV) and balances the autonomic nervous system. Unlocks with Premium alongside Periodic Sighing, Voluntary Hyperventilation, and Wim Hof.",
+      description: "Also known as Resonant Breathing. This rate (usually 5-6 breaths per minute) supports a slow, steady rhythm often associated with relaxation and HRV-focused breathing practice. Unlocks with Premium alongside Periodic Sighing, Voluntary Hyperventilation, and Wim Hof.",
       steps: ["Inhale for 6s", "Exhale for 6s", "Continuous flow", "No pauses"],
       color: "purple",
       animationClass: "animate-coherent",
@@ -271,6 +336,12 @@ const Navigation = ({
             Features
           </button>
           <button 
+            onClick={() => onChangeView('about')} 
+            className={`text-sm font-medium transition-colors ${currentView === 'about' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            About
+          </button>
+          <button 
             onClick={() => onChangeView('privacy')} 
             className={`text-sm font-medium transition-colors ${currentView === 'privacy' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
           >
@@ -313,6 +384,18 @@ const Navigation = ({
             Home
           </button>
           <button 
+            onClick={() => { onChangeView('about'); setMobileMenuOpen(false); }}
+            className="text-left text-slate-300 hover:text-white py-2"
+          >
+            About
+          </button>
+          <button 
+            onClick={() => { onChangeView('press'); setMobileMenuOpen(false); }}
+            className="text-left text-slate-300 hover:text-white py-2"
+          >
+            Press
+          </button>
+          <button 
              onClick={() => { onChangeView('privacy'); setMobileMenuOpen(false); }}
             className="text-left text-slate-300 hover:text-white py-2"
           >
@@ -348,7 +431,7 @@ const Footer = ({
 }) => (
   <footer className="bg-dark-bg border-t border-white/5 pt-16 pb-8">
     <div className="max-w-7xl mx-auto px-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
         <div className="col-span-1 md:col-span-1">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-500 to-purple-500 flex items-center justify-center text-white">
@@ -357,7 +440,7 @@ const Footer = ({
             <span className="font-bold text-lg text-white">YourBreath</span>
           </div>
           <p className="text-slate-400 text-sm leading-relaxed">
-            Master your nervous system with quick, accessible breathing sessions on iPhone and Apple Watch.
+            Build a calmer breathing routine with quick, accessible sessions on iPhone and Apple Watch.
           </p>
         </div>
         
@@ -365,8 +448,19 @@ const Footer = ({
           <h4 className="text-white font-semibold mb-4">Product</h4>
           <ul className="space-y-2 text-sm text-slate-400">
             <li><button onClick={() => onChangeView('home')} className="hover:text-brand-400">Features</button></li>
-            <li><button onClick={() => onChangeView('home')} className="hover:text-brand-400">Apple Watch</button></li>
+            <li><button onClick={() => onChangeView('apple-watch')} className="hover:text-brand-400">Apple Watch</button></li>
+            <li><button onClick={() => onChangeView('breathing-techniques')} className="hover:text-brand-400">Breathing Techniques</button></li>
             <li><button onClick={() => onChangeView('home')} className="hover:text-brand-400">Premium</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-white font-semibold mb-4">Company</h4>
+          <ul className="space-y-2 text-sm text-slate-400">
+            <li><button onClick={() => onChangeView('about')} className="hover:text-brand-400">About</button></li>
+            <li><button onClick={() => onChangeView('press')} className="hover:text-brand-400">Press</button></li>
+            <li><button onClick={() => onChangeView('private-breathing-app')} className="hover:text-brand-400">Private Breathing App</button></li>
+            <li><button onClick={() => onChangeView('no-subscription')} className="hover:text-brand-400">No Subscription</button></li>
           </ul>
         </div>
 
@@ -517,7 +611,7 @@ const BreathingTechniques = () => (
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Core Techniques</h2>
         <p className="text-slate-400 max-w-2xl mx-auto">
-          Scientifically backed breathing patterns to shift your state in minutes.
+          Well-known breathing patterns for calm, focus and everyday pauses.
         </p>
       </div>
 
@@ -560,7 +654,7 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">4-7-8 Breathing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Inhale for 4s, hold for 7s, exhale for 8s. A natural tranquilizer for the nervous system. Free to use.
+            Inhale for 4s, hold for 7s, exhale for 8s. A slow breathing pattern often used for relaxation and winding down. Free to use.
           </p>
           <span className="text-purple-400 text-xs font-bold uppercase tracking-wider border border-purple-500/20 px-3 py-1 rounded-full">Free</span>
         </div>
@@ -573,7 +667,7 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Periodic Sighing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Double inhale, long exhale. The physiological sigh offloads CO2 and instantly reduces arousal and anxiety.
+            Double inhale, long exhale. A pattern inspired by the physiological sigh, often used as a quick reset.
           </p>
           <span className="text-blue-400 text-xs font-bold uppercase tracking-wider border border-blue-500/20 px-3 py-1 rounded-full">Premium</span>
         </div>
@@ -587,7 +681,7 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Coherent Breathing</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Smooth, continuous breaths. Balances the autonomic nervous system and synchronizes HRV. Unlocked in Premium.
+            Smooth, continuous breaths. Supports a steady rhythm often associated with relaxation and HRV-focused breathing practice. Unlocked in Premium.
           </p>
           <span className="text-violet-400 text-xs font-bold uppercase tracking-wider border border-violet-500/20 px-3 py-1 rounded-full">Premium</span>
         </div>
@@ -600,7 +694,7 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Voluntary Hyperventilation</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            Increase alertness and energy with controlled rapid breathing. For practitioners looking for an edge.
+            A guided rapid-breathing routine for experienced users who want a more active practice.
           </p>
           <span className="text-orange-400 text-xs font-bold uppercase tracking-wider border border-orange-500/20 px-3 py-1 rounded-full">Premium</span>
         </div>
@@ -614,7 +708,7 @@ const BreathingTechniques = () => (
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">Wim Hof Method</h3>
           <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            A combination of forced exhalations and breath holds. Increases resilience and helps you conquer the cold.
+            A structured routine with active breathing and breath holds for users familiar with this style of practice.
           </p>
           <span className="text-cyan-400 text-xs font-bold uppercase tracking-wider border border-cyan-500/20 px-3 py-1 rounded-full">Premium</span>
         </div>
@@ -751,6 +845,141 @@ const DownloadCTA = () => (
       <p className="mt-8 text-sm text-slate-500">Requires iOS 26.0 or later and watchOS 26.0 or later.</p>
     </div>
   </section>
+);
+
+const FAQ = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
+  <section className="py-24 bg-dark-bg border-t border-white/5">
+    <div className="max-w-4xl mx-auto px-6">
+      <div className="flex items-center gap-3 mb-10">
+        <HelpCircle className="text-brand-400" size={28} />
+        <h2 className="text-3xl md:text-4xl font-bold text-white">FAQ</h2>
+      </div>
+      <div className="grid gap-4">
+        {[
+          ["Does YourBreath require an account?", "No. YourBreath does not require account creation."],
+          ["Does YourBreath use ads or analytics?", "No. The app does not show ads and does not use third-party analytics."],
+          ["Is Premium a subscription?", "No. Premium is offered as a one-time unlock for version 1.x."],
+          ["Does YourBreath replace healthcare?", "No. YourBreath is a simple wellness tool for guided breathing and everyday pauses. It is not a medical treatment and does not replace professional healthcare."]
+        ].map(([question, answer]) => (
+          <div key={question} className="bg-dark-card border border-white/5 rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-white mb-2">{question}</h3>
+            <p className="text-slate-400 leading-relaxed">{answer}</p>
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={() => onChangeView('support')}
+        className="mt-8 inline-flex items-center gap-2 text-brand-400 font-semibold hover:text-brand-300 transition-colors"
+      >
+        More support questions
+      </button>
+    </div>
+  </section>
+);
+
+const PageShell = ({ children, maxWidth = "max-w-4xl" }: { children: React.ReactNode; maxWidth?: string }) => (
+  <main className={`pt-32 pb-20 ${maxWidth} mx-auto px-6 animate-in fade-in duration-500`}>
+    {children}
+  </main>
+);
+
+const ProseSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
+    <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
+    <div className="text-slate-400 leading-relaxed space-y-4">{children}</div>
+  </section>
+);
+
+const AboutView = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
+  <PageShell>
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">About YourBreath</h1>
+    <p className="text-xl text-slate-300 leading-relaxed mb-10">
+      YourBreath is a private breathing app for iPhone and Apple Watch. One tap starts a calm session before the day gets loud. No account. No ads. No analytics. Built independently by Danish general practitioner and app developer Jan H. Clausen.
+    </p>
+
+    <ProseSection title="Why I built it">
+      <p>Many wellness apps have become more complicated than they need to be. They ask users to create accounts, accept tracking, follow streaks, manage dashboards or sign up for another subscription.</p>
+      <p>YourBreath takes the opposite approach. It is designed to be quiet, immediate and private. One tap starts a breathing session on iPhone or Apple Watch. Your sessions stay with you.</p>
+    </ProseSection>
+
+    <ProseSection title="A privacy-first breathing app">
+      <ul className="space-y-2">
+        <li>YourBreath does not require an account.</li>
+        <li>YourBreath does not show ads.</li>
+        <li>YourBreath does not use analytics.</li>
+        <li>YourBreath does not sell or share personal data.</li>
+      </ul>
+      <p>A breathing app should help you pause, not become another source of digital noise.</p>
+    </ProseSection>
+
+    <ProseSection title="Built for iPhone and Apple Watch">
+      <p>Breathing exercises work best when they are easy to start. The Watch experience makes it possible to begin a short breathing session from your wrist, using visual cues, sound or haptics.</p>
+    </ProseSection>
+
+    <ProseSection title="Independent and human-made">
+      <p>YourBreath is an independent app created by a Danish doctor and software developer. The app is not a medical treatment and does not replace professional healthcare. It is a simple tool for calm, guided breathing and everyday pauses.</p>
+    </ProseSection>
+
+    <button
+      onClick={() => onChangeView('press')}
+      className="inline-flex items-center gap-2 bg-white text-dark-bg px-5 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-colors"
+    >
+      <FileText size={18} />
+      Press information
+    </button>
+  </PageShell>
+);
+
+const PressView = () => (
+  <PageShell>
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Press</h1>
+    <p className="text-xl text-slate-300 leading-relaxed mb-10">
+      Press-friendly descriptions and key facts for YourBreath.
+    </p>
+
+    <ProseSection title="Short description">
+      <p>YourBreath is a private breathing app for iPhone and Apple Watch. One tap starts a calm breathing session before the day gets loud. No account. No ads. No analytics.</p>
+    </ProseSection>
+
+    <ProseSection title="Long description">
+      <p>YourBreath is a privacy-first breathing app for iPhone and Apple Watch, built independently by Danish general practitioner and app developer Jan H. Clausen.</p>
+      <p>The app is designed around a simple idea: a calm breathing session should be easy to start, especially when life gets noisy. YourBreath offers guided breathing sessions with calm visual cues, sound and haptics, including Box Breathing and 4-7-8 breathing.</p>
+      <p>Unlike many wellness apps, YourBreath does not require an account, does not show ads and does not use analytics. Premium is offered as a one-time unlock rather than a subscription.</p>
+    </ProseSection>
+
+    <ProseSection title="Key facts">
+      <dl className="grid sm:grid-cols-2 gap-4">
+        {[
+          ["App name", "YourBreath"],
+          ["Platforms", "iPhone and Apple Watch"],
+          ["Category", "Health & Fitness / Wellness / Breathing"],
+          ["Privacy", "No account, no ads, no analytics"],
+          ["Business model", "Free with one-time Premium unlock"],
+          ["Maker", "Jan H. Clausen, Danish general practitioner and independent app developer"]
+        ].map(([label, value]) => (
+          <div key={label}>
+            <dt className="text-white font-semibold">{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </ProseSection>
+  </PageShell>
+);
+
+const SEOView = ({ title, intro, sections }: { title: string; intro: string; sections: Array<{ title: string; body: string }> }) => (
+  <PageShell>
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{title}</h1>
+    <p className="text-xl text-slate-300 leading-relaxed mb-10">{intro}</p>
+    {sections.map((section) => (
+      <ProseSection key={section.title} title={section.title}>
+        <p>{section.body}</p>
+      </ProseSection>
+    ))}
+    <AppStoreCTA className="inline-flex items-center gap-2 bg-white text-dark-bg px-5 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-colors">
+      Download on the App Store
+    </AppStoreCTA>
+  </PageShell>
 );
 
 // --- Privacy Policy Component (Provided Text) ---
@@ -1008,14 +1237,39 @@ const SupportView = () => (
 // --- Main App Component ---
 
 const App = () => {
-  const [currentView, setCurrentView] = useState<ViewState>('home');
+  const [currentView, setCurrentView] = useState<ViewState>(() => getViewFromPath(window.location.pathname));
   const [showLearnMore, setShowLearnMore] = useState(false);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentView(getViewFromPath(window.location.pathname));
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    const meta = VIEW_META[currentView];
+    document.title = meta.title;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', meta.title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', meta.description);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', meta.title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', meta.description);
+  }, [currentView]);
+
+  const navigateTo = (view: ViewState) => {
+    const nextPath = VIEW_PATHS[view];
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+    setCurrentView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-dark-bg text-slate-50 selection:bg-brand-500/30 font-sans">
       <Navigation
         currentView={currentView}
-        onChangeView={setCurrentView}
+        onChangeView={navigateTo}
       />
       
       {currentView === 'home' && (
@@ -1027,9 +1281,82 @@ const App = () => {
           <BreathingTechniques />
           <WatchShowcase />
           <Premium />
-          <PrivacyFeature onChangeView={setCurrentView} />
+          <PrivacyFeature onChangeView={navigateTo} />
+          <FAQ onChangeView={navigateTo} />
           <DownloadCTA />
         </main>
+      )}
+
+      {currentView === 'about' && <AboutView onChangeView={navigateTo} />}
+
+      {currentView === 'press' && <PressView />}
+
+      {currentView === 'apple-watch' && (
+        <SEOView
+          title="Breathing app for Apple Watch"
+          intro="YourBreath lets you start short breathing sessions directly from your Apple Watch."
+          sections={[
+            {
+              title: "Start from your wrist",
+              body: "The Watch is ideal for breathing practice because it is already on your wrist. You do not need to unlock your phone, open a distracting feed or create an account."
+            },
+            {
+              title: "Visual cues, sound and haptics",
+              body: "With YourBreath, you can follow calm visual cues, sound or haptics and begin a short breathing session when you need a pause."
+            }
+          ]}
+        />
+      )}
+
+      {currentView === 'private-breathing-app' && (
+        <SEOView
+          title="A private breathing app with no account, no ads and no analytics"
+          intro="YourBreath was designed with privacy at the center."
+          sections={[
+            {
+              title: "Private by design",
+              body: "You do not need to create an account. You do not see ads. Your app usage is not tracked with analytics. Your breathing sessions stay with you."
+            },
+            {
+              title: "Respectful breathing practice",
+              body: "A breathing app should be calm and respectful by design, without turning a quiet pause into another tracked digital habit."
+            }
+          ]}
+        />
+      )}
+
+      {currentView === 'no-subscription' && (
+        <SEOView
+          title="A breathing app without subscription pressure"
+          intro="YourBreath is free to try and offers Premium as a one-time unlock."
+          sections={[
+            {
+              title: "Free to try",
+              body: "The goal is simple: a calm breathing app should not become another monthly subscription. YourBreath is designed to be useful when you need it and quiet when you do not."
+            },
+            {
+              title: "One-time Premium",
+              body: "Premium unlocks additional breathing routines, longer sessions, programs and personal insights for version 1.x without a recurring subscription."
+            }
+          ]}
+        />
+      )}
+
+      {currentView === 'breathing-techniques' && (
+        <SEOView
+          title="Breathing techniques in YourBreath"
+          intro="YourBreath includes simple guided breathing patterns such as Box Breathing and 4-7-8 breathing."
+          sections={[
+            {
+              title: "Core routines",
+              body: "The app uses calm visual cues, sound and haptics to make each session easy to follow on iPhone and Apple Watch."
+            },
+            {
+              title: "Premium variety",
+              body: "Premium unlocks additional breathing routines for users who want more variety and a deeper breathing practice."
+            }
+          ]}
+        />
       )}
       
       {currentView === 'privacy' && <PrivacyPolicyView />}
@@ -1044,7 +1371,7 @@ const App = () => {
       />
       
       <Footer
-        onChangeView={setCurrentView}
+        onChangeView={navigateTo}
       />
     </div>
   );
