@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://yourbreath.pages.dev/sitemap.xml
+Sitemap: https://yourbreath.pages.dev/sitemap-google.xml
+Sitemap: https://yourbreath.pages.dev/sitemap-index.xml
 Sitemap: https://yourbreath.pages.dev/sitemap_index.xml
 Sitemap: https://yourbreath.pages.dev/sitemap.txt
