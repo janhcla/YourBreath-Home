@@ -27,19 +27,20 @@ const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
 
 const VIEW_PATHS: Record<ViewState, string> = {
   home: '/',
-  about: '/about',
-  press: '/press',
-  'apple-watch': '/apple-watch-breathing-app',
-  'private-breathing-app': '/private-breathing-app',
-  'no-subscription': '/breathing-app-without-subscription',
-  'breathing-techniques': '/breathing-techniques',
-  privacy: '/privacy',
-  terms: '/terms',
-  support: '/support'
+  about: '/about/',
+  press: '/press/',
+  'apple-watch': '/apple-watch-breathing-app/',
+  'private-breathing-app': '/private-breathing-app/',
+  'no-subscription': '/breathing-app-without-subscription/',
+  'breathing-techniques': '/breathing-techniques/',
+  privacy: '/privacy/',
+  terms: '/terms/',
+  support: '/support/'
 };
 
 const PATH_VIEWS = Object.entries(VIEW_PATHS).reduce<Record<string, ViewState>>((acc, [view, path]) => {
   acc[path] = view as ViewState;
+  acc[path.replace(/\/$/, '') || '/'] = view as ViewState;
   return acc;
 }, {});
 
