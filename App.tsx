@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   Wind, 
   Watch, 
-  Heart, 
   ShieldCheck, 
   Zap, 
   BarChart3, 
@@ -22,8 +21,10 @@ type ViewState = 'home' | 'about' | 'press' | 'apple-watch' | 'private-breathing
 type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
 const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
+const HERO_APP_SCREENSHOT_SRC = "/app-store-instant-calm.jpeg";
+const WATCH_APP_SCREENSHOT_SRC = "/app-store-iphone-watch.jpeg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
-const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
+const APP_STORE_URL = "/app-store";
 
 const VIEW_PATHS: Record<ViewState, string> = {
   home: '/',
@@ -102,8 +103,6 @@ const AppStoreCTA = ({
 }) => (
   <a
     href={APP_STORE_URL}
-    target="_blank"
-    rel="noreferrer"
     className={className}
     aria-label={ariaLabel}
   >
@@ -520,50 +519,58 @@ const Hero = ({
 }: {
   onOpenLearnMore: () => void;
 }) => (
-  <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-    {/* Background Elements */}
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-      <div className="absolute top-20 left-10 w-96 h-96 bg-brand-500/20 rounded-full blur-[100px] animate-float"></div>
-      <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-500/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '2s' }}></div>
+  <section className="relative min-h-[92vh] pt-28 pb-16 md:pt-36 md:pb-20 overflow-hidden flex items-center">
+    <div className="absolute inset-0 pointer-events-none">
+      <img
+        src={HERO_APP_SCREENSHOT_SRC}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-y-0 right-0 h-full w-full object-cover object-[68%_center] opacity-45 md:opacity-60"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-dark-bg via-dark-bg/88 to-dark-bg/35"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-dark-bg/50"></div>
     </div>
 
-    <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl">
-        YourBreath
-      </h1>
+    <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+      <div className="max-w-2xl">
+        <p className="text-brand-300 text-sm font-bold uppercase tracking-wider mb-4">
+          Private breathing app for iPhone and Apple Watch
+        </p>
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          YourBreath
+        </h1>
 
-      <p className="text-2xl md:text-3xl text-white font-medium mb-4 leading-relaxed max-w-3xl">
-        Start a calm breath on iPhone or Apple Watch before the day gets loud.
-      </p>
+        <p className="text-2xl md:text-3xl text-white font-medium mb-4 leading-relaxed">
+          Start a calm breath before the day gets loud.
+        </p>
 
-      <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed">
-        No account. No ads. No analytics. Your sessions stay with you.
-      </p>
+        <p className="text-lg md:text-xl text-slate-300 max-w-xl mb-4 leading-relaxed">
+          Free to try. No account, no ads, no analytics. Built independently by Danish doctor and developer Jan H. Clausen.
+        </p>
 
-      <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto mt-4">
-        <AppStoreCTA
-          className="inline-block transition-all hover:scale-105 hover:opacity-90 shadow-xl shadow-brand-500/10"
-          ariaLabel="Download on the App Store"
-        >
-          <img 
-            src={APP_STORE_BADGE_SRC}
-            alt="Download on the App Store" 
-            className="h-[60px] w-auto"
-          />
-        </AppStoreCTA>
-          <a href="#premium" onClick={(e) => { e.preventDefault(); document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth' }); }} className="w-full sm:w-auto px-8 h-[60px] bg-white/5 text-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md flex items-center justify-center">
-            See Premium
-          </a>
-      </div>
-
-      {/* Abstract Breathing Visual */}
-      <div className="mt-20 relative w-64 h-64 flex items-center justify-center">
-        <div className="absolute inset-0 bg-brand-500/20 rounded-full blur-xl animate-breathe"></div>
-        <div className="absolute inset-4 bg-gradient-to-tr from-brand-500/30 to-purple-500/30 rounded-full blur-md animate-breathe" style={{ animationDelay: '1s' }}></div>
-        <div className="w-32 h-32 bg-gradient-to-br from-brand-400 to-purple-500 rounded-full shadow-2xl shadow-brand-500/50 flex items-center justify-center relative z-10 animate-breathe">
-           <span className="absolute text-white font-medium text-sm tracking-widest uppercase animate-text-breathe-inhale">Inhale</span>
-           <span className="absolute text-white font-medium text-sm tracking-widest uppercase animate-text-breathe-exhale">Exhale</span>
+        <div className="flex flex-col items-start gap-3 mt-8">
+          <AppStoreCTA
+            className="inline-block shadow-xl shadow-brand-500/10"
+            ariaLabel="Download YourBreath on the App Store"
+          >
+            <img
+              src={APP_STORE_BADGE_SRC}
+              alt="Download on the App Store"
+              className="h-[64px] w-auto"
+            />
+          </AppStoreCTA>
+          <p className="text-sm text-slate-400">
+            Includes Box Breathing and 4-7-8 breathing. Premium is a one-time unlock.
+          </p>
         </div>
+
+        <button
+          onClick={onOpenLearnMore}
+          className="mt-8 inline-flex items-center gap-2 text-brand-300 font-semibold hover:text-brand-200 transition-colors"
+        >
+          <Info size={18} />
+          See breathing techniques
+        </button>
       </div>
     </div>
   </section>
@@ -738,28 +745,12 @@ const WatchShowcase = () => (
   <section className="py-24 bg-dark-card border-y border-white/5 overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
       <div className="lg:w-1/2 relative">
-         {/* Abstract Watch CSS Mockup */}
-         <div className="relative mx-auto w-[280px] h-[350px] bg-slate-800 rounded-[3rem] border-8 border-slate-700 shadow-2xl flex items-center justify-center">
-            {/* Screen */}
-            <div className="w-[92%] h-[92%] bg-black rounded-[2.5rem] flex flex-col items-center justify-center p-4 relative overflow-hidden">
-                {/* Breathing Circle on Watch */}
-                <div className="w-32 h-32 rounded-full border-4 border-brand-500/30 flex items-center justify-center relative mb-4">
-                     <div className="w-24 h-24 bg-brand-500 rounded-full animate-breathe opacity-90"></div>
-                </div>
-                <div className="relative h-7 w-full flex items-center justify-center">
-                  <div className="absolute text-white font-semibold text-lg animate-text-breathe-inhale">Inhale</div>
-                  <div className="absolute text-white font-semibold text-lg animate-text-breathe-exhale">Exhale</div>
-                </div>
-                
-                {/* Top status */}
-                <div className="absolute top-4 w-full flex justify-between px-6 text-[10px] text-slate-500">
-                    <span>10:09</span>
-                    <Heart size={10} className="text-red-500" />
-                </div>
-            </div>
-            {/* Button */}
-            <div className="absolute right-[-12px] top-24 w-3 h-16 bg-slate-600 rounded-r-md"></div>
-         </div>
+        <img
+          src={WATCH_APP_SCREENSHOT_SRC}
+          alt="YourBreath shown on iPhone and Apple Watch"
+          className="mx-auto w-full max-w-md rounded-[2rem] border border-white/10 shadow-2xl shadow-black/40"
+          loading="lazy"
+        />
       </div>
       
       <div className="lg:w-1/2">
@@ -770,6 +761,16 @@ const WatchShowcase = () => (
         <p className="text-slate-400 text-lg mb-8 leading-relaxed">
            Install the watchOS app alongside the iPhone app. Routines, Premium status, and haptic settings stay in sync, so you can start breathing from your watch when your phone is away.
         </p>
+        <AppStoreCTA
+          className="inline-block"
+          ariaLabel="Download YourBreath on the App Store"
+        >
+          <img
+            src={APP_STORE_BADGE_SRC}
+            alt="Download on the App Store"
+            className="h-[56px] w-auto"
+          />
+        </AppStoreCTA>
       </div>
     </div>
   </section>
@@ -849,16 +850,15 @@ const DownloadCTA = () => (
       
       <div className="flex flex-col items-center justify-center gap-5">
         <AppStoreCTA
-          className="inline-block transition-all hover:scale-105 hover:opacity-90"
+          className="inline-block"
           ariaLabel="Download on the App Store"
         >
           <img 
             src={APP_STORE_BADGE_SRC}
             alt="Download on the App Store" 
-            className="h-[60px] w-auto"
+            className="h-[64px] w-auto"
           />
         </AppStoreCTA>
-        <ProductHuntBadge />
       </div>
       <p className="mt-8 text-sm text-slate-500">Requires iOS 26.0 or later and watchOS 26.0 or later.</p>
     </div>
@@ -987,16 +987,34 @@ const PressView = () => (
 
 const SEOView = ({ title, intro, sections }: { title: string; intro: string; sections: Array<{ title: string; body: string }> }) => (
   <PageShell>
-    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{title}</h1>
-    <p className="text-xl text-slate-300 leading-relaxed mb-10">{intro}</p>
+    <div className="grid lg:grid-cols-[1fr_320px] gap-10 items-start mb-12">
+      <div>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{title}</h1>
+        <p className="text-xl text-slate-300 leading-relaxed mb-8">{intro}</p>
+        <AppStoreCTA
+          className="inline-block"
+          ariaLabel="Download YourBreath on the App Store"
+        >
+          <img
+            src={APP_STORE_BADGE_SRC}
+            alt="Download on the App Store"
+            className="h-[60px] w-auto"
+          />
+        </AppStoreCTA>
+        <p className="mt-4 text-sm text-slate-500">Free to try. No account, no ads, no analytics.</p>
+      </div>
+      <img
+        src={WATCH_APP_SCREENSHOT_SRC}
+        alt="YourBreath running on iPhone and Apple Watch"
+        className="w-full max-w-xs lg:max-w-none mx-auto rounded-[2rem] border border-white/10 shadow-2xl shadow-black/40"
+        loading="lazy"
+      />
+    </div>
     {sections.map((section) => (
       <ProseSection key={section.title} title={section.title}>
         <p>{section.body}</p>
       </ProseSection>
     ))}
-    <AppStoreCTA className="inline-flex items-center gap-2 bg-white text-dark-bg px-5 py-3 rounded-xl font-semibold hover:bg-brand-50 transition-colors">
-      Download on the App Store
-    </AppStoreCTA>
   </PageShell>
 );
 
