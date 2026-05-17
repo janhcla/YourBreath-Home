@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yourbreath.pages.dev/sitemap.xml
-Sitemap: https://yourbreath.pages.dev/sitemap-google.xml
-Sitemap: https://yourbreath.pages.dev/sitemap-index.xml
-Sitemap: https://yourbreath.pages.dev/sitemap_index.xml
-Sitemap: https://yourbreath.pages.dev/sitemap.txt
+Sitemap: https://yourbreath.app/sitemap.xml
+Sitemap: https://yourbreath.app/sitemap-google.xml
+Sitemap: https://yourbreath.app/sitemap-index.xml
+Sitemap: https://yourbreath.app/sitemap_index.xml
+Sitemap: https://yourbreath.app/sitemap.txt

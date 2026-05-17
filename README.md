@@ -2,7 +2,7 @@
 
 Marketing, privacy, terms, and support site for YourBreath.
 
-Production: https://yourbreath.pages.dev
+Production: https://yourbreath.app
 
 Hosting: Cloudflare Pages, synced directly from GitHub.
 

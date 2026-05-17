@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const SITE_URL = 'https://yourbreath.pages.dev';
+const SITE_URL = 'https://yourbreath.app';
 const distDir = path.resolve('dist');
 const indexPath = path.join(distDir, 'index.html');
 

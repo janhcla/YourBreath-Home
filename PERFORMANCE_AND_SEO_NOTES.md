@@ -44,8 +44,8 @@ This increases render blocking and slows first-load performance.
 
 Submit these to Google Search Console:
 
-- https://yourbreath.pages.dev/sitemap.xml
-- https://yourbreath.pages.dev/
+- https://yourbreath.app/sitemap.xml
+- https://yourbreath.app/
 
 ### Best long-term improvement
 
