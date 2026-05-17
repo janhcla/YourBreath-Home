@@ -560,7 +560,7 @@ const Hero = ({
             />
           </AppStoreCTA>
           <p className="text-sm text-slate-400">
-            Includes Box Breathing and 4-7-8 breathing. Premium is a one-time unlock.
+            Includes Box Breathing and 4-7-8 breathing for free. Premium is a one-time unlock.
           </p>
         </div>
 
