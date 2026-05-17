@@ -685,7 +685,7 @@ const BreathingTechniques = () => (
 
         {/* Periodic Sighing */}
         <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-blue-500/30 transition-colors relative overflow-hidden">
-          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> Premium</div>
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
             <div className="w-24 h-24 bg-blue-500 rounded-full animate-cyclic opacity-80"></div>
           </div>
@@ -698,7 +698,7 @@ const BreathingTechniques = () => (
 
         {/* Coherent Breathing */}
         <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-violet-500/30 transition-colors relative overflow-hidden">
-          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> Premium</div>
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
             <div className="w-24 h-24 bg-violet-500 rounded-full animate-coherent opacity-80 blur-md"></div>
             <div className="w-24 h-24 bg-violet-400 rounded-full animate-coherent opacity-40 absolute"></div>
@@ -712,7 +712,7 @@ const BreathingTechniques = () => (
 
         {/* Voluntary Hyperventilation */}
         <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-orange-500/30 transition-colors relative overflow-hidden">
-          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> Premium</div>
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
             <div className="w-24 h-24 bg-orange-500 rounded-lg animate-pulse opacity-80 scale-110"></div>
           </div>
@@ -725,7 +725,7 @@ const BreathingTechniques = () => (
 
         {/* Wim Hof Method */}
         <div className="bg-dark-card border border-white/5 rounded-3xl p-8 flex flex-col items-center text-center group hover:border-cyan-500/30 transition-colors relative overflow-hidden">
-          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> PRO</div>
+          <div className="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><Lock size={10} /> Premium</div>
           <div className="w-48 h-48 mb-8 relative flex items-center justify-center bg-dark-bg rounded-2xl border border-white/5 overflow-hidden">
             <div className="w-16 h-16 bg-cyan-500 rounded-full animate-ping opacity-80 absolute"></div>
             <div className="w-24 h-24 bg-cyan-400 rounded-full opacity-40"></div>
