@@ -3,7 +3,7 @@ export default {
     const url = new URL(request.url);
     const host = request.headers.get("host")?.split(":")[0] ?? url.hostname;
 
-    if (host === "yourbreath.pages.dev") {
+    if (host === "yourbreath.pages.dev" || host === "www.yourbreath.app") {
       url.hostname = "yourbreath.app";
       url.protocol = "https:";
       url.search = "";
