@@ -24,7 +24,7 @@ const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
 const HERO_APP_SCREENSHOT_SRC = "/app-store-instant-calm.jpeg";
 const WATCH_APP_SCREENSHOT_SRC = "/app-store-iphone-watch.jpeg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
-const APP_STORE_URL = "/app-store";
+const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
 
 const VIEW_PATHS: Record<ViewState, string> = {
   home: '/',
@@ -103,6 +103,8 @@ const AppStoreCTA = ({
 }) => (
   <a
     href={APP_STORE_URL}
+    target="_blank"
+    rel="noopener noreferrer"
     className={className}
     aria-label={ariaLabel}
   >

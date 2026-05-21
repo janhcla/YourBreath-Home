@@ -15,7 +15,12 @@ const routes = [
       'YourBreath, breathing app, Apple Watch breathing app, iPhone breathing app, private breathing app, no ads, no analytics, box breathing, 4-7-8 breathing',
     heading: 'YourBreath',
     body:
-      'YourBreath is a private breathing app for iPhone and Apple Watch. Start Box Breathing or 4-7-8 breathing quickly, use visual cues, sound or haptics, and keep breathing sessions on your device. No account, no ads, no third-party analytics and no subscription pressure.'
+      'YourBreath is a private breathing app for iPhone and Apple Watch. Start Box Breathing or 4-7-8 breathing quickly, use visual cues, sound or haptics, and keep breathing sessions on your device. No account, no ads, no third-party analytics and no subscription pressure.',
+    details: [
+      'Includes Box Breathing and 4-7-8 breathing for free.',
+      'Supports iPhone and Apple Watch with calm visual, sound and haptic cues.',
+      'Built independently by Danish general practitioner and app developer Jan H. Clausen.'
+    ]
   },
   {
     path: '/about/',
@@ -26,7 +31,12 @@ const routes = [
       'YourBreath founder, Jan H Clausen, Danish doctor app developer, independent breathing app, privacy-first wellness app',
     heading: 'About YourBreath',
     body:
-      'YourBreath is built independently by Jan H. Clausen, a Danish general practitioner and app developer. The app focuses on practical breathing sessions for everyday calm, privacy-first design, and direct Apple Watch support.'
+      'YourBreath is built independently by Jan H. Clausen, a Danish general practitioner and app developer. The app focuses on practical breathing sessions for everyday calm, privacy-first design, and direct Apple Watch support.',
+    details: [
+      'The app is designed as a simple wellness tool, not a medical treatment.',
+      'YourBreath works without accounts, ads or third-party analytics.',
+      'Premium is offered as a one-time unlock for version 1.x.'
+    ]
   },
   {
     path: '/press/',
@@ -37,7 +47,12 @@ const routes = [
       'YourBreath press, private breathing app, Apple Watch wellness app, iPhone wellness app, no account breathing app',
     heading: 'Press',
     body:
-      'YourBreath is a private breathing app for iPhone and Apple Watch. Key facts: no account, no ads, no third-party analytics, free breathing patterns, Apple Watch haptic guidance and a one-time Premium unlock.'
+      'YourBreath is a private breathing app for iPhone and Apple Watch. Key facts: no account, no ads, no third-party analytics, free breathing patterns, Apple Watch haptic guidance and a one-time Premium unlock.',
+    details: [
+      'Category: health and wellness app for iPhone and Apple Watch.',
+      'Business model: free to try with one-time Premium unlock.',
+      'Privacy position: no account, no advertising and no third-party analytics.'
+    ]
   },
   {
     path: '/apple-watch-breathing-app/',
@@ -48,7 +63,12 @@ const routes = [
       'Apple Watch breathing app, watchOS breathing app, haptic breathing guide, YourBreath Apple Watch',
     heading: 'Breathing app for Apple Watch',
     body:
-      'YourBreath works on Apple Watch so you can start short breathing sessions from your wrist. Haptic cues help guide inhale, hold and exhale phases without needing to keep looking at the screen.'
+      'YourBreath works on Apple Watch so you can start short breathing sessions from your wrist. Haptic cues help guide inhale, hold and exhale phases without needing to keep looking at the screen.',
+    details: [
+      'Start quick breathing sessions directly from Apple Watch.',
+      'Use haptic guidance when looking at the screen is inconvenient.',
+      'Premium status, routines and haptic settings sync with the iPhone app.'
+    ]
   },
   {
     path: '/private-breathing-app/',
@@ -59,7 +79,12 @@ const routes = [
       'private breathing app, no account breathing app, no ads breathing app, no analytics wellness app, YourBreath privacy',
     heading: 'Private breathing app',
     body:
-      'YourBreath is designed for privacy. It works without an account, without ads and without third-party analytics. Breathing sessions stay with the user.'
+      'YourBreath is designed for privacy. It works without an account, without ads and without third-party analytics. Breathing sessions stay with the user.',
+    details: [
+      'No account is required to use the app.',
+      'The app does not show ads or use third-party analytics.',
+      'HealthKit access is optional and controlled by the user.'
+    ]
   },
   {
     path: '/breathing-app-without-subscription/',
@@ -70,7 +95,12 @@ const routes = [
       'breathing app without subscription, one-time purchase breathing app, no subscription breathing app, YourBreath Premium',
     heading: 'Breathing app without subscription pressure',
     body:
-      'YourBreath includes free breathing patterns and offers Premium as a one-time unlock. It is built for people who want a calm breathing app without subscription pressure.'
+      'YourBreath includes free breathing patterns and offers Premium as a one-time unlock. It is built for people who want a calm breathing app without subscription pressure.',
+    details: [
+      'Box Breathing and 4-7-8 breathing are included for free.',
+      'Premium unlocks deeper tools, longer routines and personal insights.',
+      'Premium is a one-time unlock for version 1.x rather than a subscription.'
+    ]
   },
   {
     path: '/breathing-techniques/',
@@ -81,7 +111,12 @@ const routes = [
       'Box Breathing app, 4-7-8 breathing app, coherent breathing, physiological sigh, breathing techniques, YourBreath',
     heading: 'Breathing techniques',
     body:
-      'YourBreath includes guided breathing techniques such as Box Breathing and 4-7-8 breathing. Premium adds more advanced patterns including Coherent Breathing, Periodic Sighing, Voluntary Hyperventilation and Wim Hof style routines.'
+      'YourBreath includes guided breathing techniques such as Box Breathing and 4-7-8 breathing. Premium adds more advanced patterns including Coherent Breathing, Periodic Sighing, Voluntary Hyperventilation and Wim Hof style routines.',
+    details: [
+      'Box Breathing uses equal inhale, hold, exhale and hold phases.',
+      '4-7-8 breathing uses a slower inhale, hold and exhale rhythm for winding down.',
+      'Premium techniques are clearly marked as Premium in the app and on the website.'
+    ]
   },
   {
     path: '/privacy/',
@@ -92,7 +127,12 @@ const routes = [
       'YourBreath privacy policy, no tracking breathing app, no analytics breathing app',
     heading: 'Privacy Policy',
     body:
-      'YourBreath is built to work without accounts, advertising or third-party analytics. The privacy policy explains how the app handles user data and HealthKit-related permissions.'
+      'YourBreath is built to work without accounts, advertising or third-party analytics. The privacy policy explains how the app handles user data and HealthKit-related permissions.',
+    details: [
+      'Breathing sessions and progress data are stored on device.',
+      'HealthKit permissions are optional and can be controlled in Apple Health settings.',
+      'The developer does not receive account, advertising or analytics profiles from the app.'
+    ]
   },
   {
     path: '/terms/',
@@ -101,7 +141,12 @@ const routes = [
     keywords: 'YourBreath terms, YourBreath app terms, breathing app terms',
     heading: 'Terms of Service',
     body:
-      'The YourBreath Terms of Service describe use of the iPhone and Apple Watch app, Premium unlocks, refunds, support and health-related disclaimers.'
+      'The YourBreath Terms of Service describe use of the iPhone and Apple Watch app, Premium unlocks, refunds, support and health-related disclaimers.',
+    details: [
+      'YourBreath is a wellness tool and does not replace professional healthcare.',
+      'Premium purchases and refunds are handled by the Apple App Store.',
+      'Users should stop if breathing exercises feel uncomfortable.'
+    ]
   },
   {
     path: '/support/',
@@ -111,7 +156,12 @@ const routes = [
       'YourBreath support, breathing app support, Apple Watch breathing app help, HealthKit support',
     heading: 'Support',
     body:
-      'Get support for YourBreath, including Apple Watch setup, HealthKit permissions, Premium, refunds, breathing sessions and app troubleshooting.'
+      'Get support for YourBreath, including Apple Watch setup, HealthKit permissions, Premium, refunds, breathing sessions and app troubleshooting.',
+    details: [
+      'Find help with Premium restore, App Store refunds and Apple Watch setup.',
+      'HealthKit data can be managed in the Apple Health app.',
+      'Support is available by email from the app and the website.'
+    ]
   }
 ];
 
@@ -124,10 +174,14 @@ const escapeHtml = (value) =>
 
 const replaceTag = (html, selector, replacement) => html.replace(selector, replacement);
 
-const buildStaticFallback = ({ heading, body }) => `
+const buildStaticFallback = ({ heading, body, details = [] }) => `
       <main class="seo-fallback" aria-label="${escapeHtml(heading)}">
         <h1>${escapeHtml(heading)}</h1>
         <p>${escapeHtml(body)}</p>
+        <ul>
+          ${details.map((detail) => `<li>${escapeHtml(detail)}</li>`).join('\n          ')}
+        </ul>
+        <p><a href="${SITE_URL}/">YourBreath home</a></p>
       </main>`;
 
 const buildRouteHtml = (template, route) => {
