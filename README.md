@@ -24,3 +24,10 @@ Prerequisite: Node.js 22.12.0 or newer. The repository includes `.nvmrc` for loc
    ```
 
 Cloudflare Pages should use `npm run build` as the build command and `dist` as the output directory.
+For manual deploys, use:
+
+```bash
+npm run deploy
+```
+
+Do not use `npx wrangler deploy` here; that targets Workers, not this Pages site.

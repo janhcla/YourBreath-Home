@@ -13,16 +13,21 @@ import {
   Info,
   Lock,
   FileText,
-  HelpCircle
+  HelpCircle,
+  ArrowRight,
+  Heart
 } from 'lucide-react';
 
 // --- Types ---
-type ViewState = 'home' | 'about' | 'press' | 'apple-watch' | 'private-breathing-app' | 'no-subscription' | 'breathing-techniques' | 'privacy' | 'terms' | 'support';
+type ViewState = 'home' | 'about' | 'press' | 'apple-watch' | 'private-breathing-app' | 'no-subscription' | 'breathing-techniques' | 'breathwork-app' | 'mindfulness-app' | 'meditation-app' | 'privacy' | 'terms' | 'support';
 type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
 const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
-const HERO_APP_SCREENSHOT_SRC = "/app-store-instant-calm.jpeg";
-const WATCH_APP_SCREENSHOT_SRC = "/app-store-iphone-watch.jpeg";
+const APP_ICON_SRC = "/app-icon.png";
+const HOME_SCREENSHOT_SRC = "/screenshots/home.jpg";
+const SESSION_SCREENSHOT_SRC = "/screenshots/box-breathing.jpg";
+const SUMMARY_SCREENSHOT_SRC = "/screenshots/session-complete.jpg";
+const PROGRESS_SCREENSHOT_SRC = "/screenshots/progress.jpg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
 const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
 
@@ -34,6 +39,9 @@ const VIEW_PATHS: Record<ViewState, string> = {
   'private-breathing-app': '/private-breathing-app/',
   'no-subscription': '/breathing-app-without-subscription/',
   'breathing-techniques': '/breathing-techniques/',
+  'breathwork-app': '/breathwork-app/',
+  'mindfulness-app': '/mindfulness-breathing-app/',
+  'meditation-app': '/breathing-meditation-app/',
   privacy: '/privacy/',
   terms: '/terms/',
   support: '/support/'
@@ -69,12 +77,24 @@ const VIEW_META: Record<ViewState, { title: string; description: string }> = {
     description: "YourBreath is a private breathing app with no account, no ads and no analytics."
   },
   'no-subscription': {
-    title: "Breathing app without subscription pressure - YourBreath",
-    description: "YourBreath is free to try and offers Premium as a one-time unlock instead of a subscription."
+    title: "Breathing App Without a Subscription | Free Forever Exercises",
+    description: "Box Breathing and 4-7-8 Breathing stay free forever on iPhone and Apple Watch. No account, ads or analytics. Premium is a one-time unlock."
   },
   'breathing-techniques': {
-    title: "Breathing techniques - YourBreath",
-    description: "Learn about the guided breathing patterns in YourBreath, including Box Breathing and 4-7-8 breathing."
+    title: "Guided Breathing Techniques for iPhone & Apple Watch | YourBreath",
+    description: "Follow Box Breathing, 4-7-8 Breathing and more with clear visual, sound and haptic cues on iPhone and Apple Watch."
+  },
+  'breathwork-app': {
+    title: "Breathwork App for iPhone & Apple Watch | YourBreath",
+    description: "A private breathwork app with guided Box Breathing, 4-7-8 Breathing and Apple Watch haptics. Core exercises stay free forever."
+  },
+  'mindfulness-app': {
+    title: "Mindfulness Breathing App Without Ads | YourBreath",
+    description: "Take a quiet mindful pause with guided breathing on iPhone and Apple Watch. No account, no ads and no analytics."
+  },
+  'meditation-app': {
+    title: "Simple Breathing Meditation App | YourBreath",
+    description: "Use short guided breathing sessions as a simple meditation practice on iPhone and Apple Watch. Start without an account or subscription."
   },
   privacy: {
     title: "Privacy Policy - YourBreath",
@@ -468,6 +488,7 @@ const Footer = ({
             <li><button onClick={() => onChangeView('home')} className="hover:text-brand-400">Features</button></li>
             <li><button onClick={() => onChangeView('apple-watch')} className="hover:text-brand-400">Apple Watch</button></li>
             <li><button onClick={() => onChangeView('breathing-techniques')} className="hover:text-brand-400">Breathing Techniques</button></li>
+            <li><button onClick={() => onChangeView('breathwork-app')} className="hover:text-brand-400">Breathwork App</button></li>
             <li><button onClick={() => onChangeView('home')} className="hover:text-brand-400">Premium</button></li>
           </ul>
         </div>
@@ -479,6 +500,8 @@ const Footer = ({
             <li><button onClick={() => onChangeView('press')} className="hover:text-brand-400">Press</button></li>
             <li><button onClick={() => onChangeView('private-breathing-app')} className="hover:text-brand-400">Private Breathing App</button></li>
             <li><button onClick={() => onChangeView('no-subscription')} className="hover:text-brand-400">No Subscription</button></li>
+            <li><button onClick={() => onChangeView('mindfulness-app')} className="hover:text-brand-400">Mindfulness</button></li>
+            <li><button onClick={() => onChangeView('meditation-app')} className="hover:text-brand-400">Breathing Meditation</button></li>
           </ul>
         </div>
 
@@ -521,36 +544,19 @@ const Hero = ({
 }: {
   onOpenLearnMore: () => void;
 }) => (
-  <section className="relative min-h-[92vh] pt-28 pb-16 md:pt-36 md:pb-20 overflow-hidden flex items-center">
-    <div className="absolute inset-0 pointer-events-none">
-      <img
-        src={HERO_APP_SCREENSHOT_SRC}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-y-0 right-0 h-full w-full object-cover object-[68%_center] opacity-45 md:opacity-60"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-dark-bg via-dark-bg/88 to-dark-bg/35"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-dark-bg/50"></div>
-    </div>
-
-    <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+  <section className="relative min-h-[92vh] pt-28 pb-20 md:pt-36 overflow-hidden flex items-center hero-grid">
+    <div className="max-w-7xl mx-auto px-6 relative z-10 w-full grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-20 items-center">
       <div className="max-w-2xl">
-        <p className="text-brand-300 text-sm font-bold uppercase tracking-wider mb-4">
-          Private breathing app for iPhone and Apple Watch
-        </p>
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
-          YourBreath
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-[-0.045em] text-white mb-6 leading-[0.98]">
+          A calmer breath,
+          <span className="block text-brand-300">right when you need it.</span>
         </h1>
 
-        <p className="text-2xl md:text-3xl text-white font-medium mb-4 leading-relaxed">
-          Start a calm breath before the day gets loud.
-        </p>
-
         <p className="text-lg md:text-xl text-slate-300 max-w-xl mb-4 leading-relaxed">
-          Free to try. No account, no ads, no analytics. Built independently by Danish doctor and developer Jan H. Clausen.
+          Guided breathing on iPhone and Apple Watch. Box Breathing and 4-7-8 Breathing stay free forever.
         </p>
 
-        <div className="flex flex-col items-start gap-3 mt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 mt-8">
           <AppStoreCTA
             className="inline-block shadow-xl shadow-brand-500/10"
             ariaLabel="Download YourBreath on the App Store"
@@ -561,18 +567,29 @@ const Hero = ({
               className="h-[64px] w-auto"
             />
           </AppStoreCTA>
-          <p className="text-sm text-slate-400">
-            Includes Box Breathing and 4-7-8 breathing for free. Premium is a one-time unlock.
-          </p>
+          <button
+            onClick={onOpenLearnMore}
+            className="inline-flex items-center gap-2 text-brand-300 font-semibold hover:text-brand-200 transition-colors"
+          >
+            See how it looks <ArrowRight size={18} />
+          </button>
         </div>
 
-        <button
-          onClick={onOpenLearnMore}
-          className="mt-8 inline-flex items-center gap-2 text-brand-300 font-semibold hover:text-brand-200 transition-colors"
-        >
-          <Info size={18} />
-          See breathing techniques
-        </button>
+        <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-400">
+          <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-brand-300" /> No account</span>
+          <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-brand-300" /> No ads</span>
+          <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-brand-300" /> No analytics</span>
+          <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-brand-300" /> No subscription required</span>
+        </div>
+      </div>
+
+      <div className="relative mx-auto w-full max-w-[520px] min-h-[570px] md:min-h-[680px]" aria-label="Real YourBreath app screenshots">
+        <div className="phone-shot absolute left-0 top-4 w-[62%] rotate-[-4deg]">
+          <img src={HOME_SCREENSHOT_SRC} alt="YourBreath home screen with Quick Box Breathing" />
+        </div>
+        <div className="phone-shot absolute right-0 bottom-0 w-[58%] rotate-[4deg]">
+          <img src={SESSION_SCREENSHOT_SRC} alt="Active Box Breathing session in YourBreath" />
+        </div>
       </div>
     </div>
   </section>
@@ -746,19 +763,16 @@ const BreathingTechniques = () => (
 const WatchShowcase = () => (
   <section className="py-24 bg-dark-card border-y border-white/5 overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
-      <div className="lg:w-1/2 relative">
-        <img
-          src={WATCH_APP_SCREENSHOT_SRC}
-          alt="YourBreath shown on iPhone and Apple Watch"
-          className="mx-auto w-full max-w-md rounded-[2rem] border border-white/10 shadow-2xl shadow-black/40"
-          loading="lazy"
-        />
+      <div className="lg:w-1/2 relative flex justify-center gap-5 items-end">
+        <div className="phone-shot w-[44%] -rotate-3">
+          <img src={SESSION_SCREENSHOT_SRC} alt="YourBreath guided Box Breathing session" loading="lazy" />
+        </div>
+        <div className="phone-shot w-[44%] rotate-3 translate-y-8">
+          <img src={SUMMARY_SCREENSHOT_SRC} alt="YourBreath completed breathing session summary" loading="lazy" />
+        </div>
       </div>
       
       <div className="lg:w-1/2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-bold uppercase tracking-wider mb-6">
-          On Your Wrist
-        </div>
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">iPhone and Apple Watch work quietly together</h2>
         <p className="text-slate-400 text-lg mb-8 leading-relaxed">
            Install the watchOS app alongside the iPhone app. Routines, Premium status, and haptic settings stay in sync, so you can start breathing from your watch when your phone is away.
@@ -987,37 +1001,144 @@ const PressView = () => (
   </PageShell>
 );
 
-const SEOView = ({ title, intro, sections }: { title: string; intro: string; sections: Array<{ title: string; body: string }> }) => (
-  <PageShell>
-    <div className="grid lg:grid-cols-[1fr_320px] gap-10 items-start mb-12">
-      <div>
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{title}</h1>
-        <p className="text-xl text-slate-300 leading-relaxed mb-8">{intro}</p>
-        <AppStoreCTA
-          className="inline-block"
-          ariaLabel="Download YourBreath on the App Store"
-        >
-          <img
-            src={APP_STORE_BADGE_SRC}
-            alt="Download on the App Store"
-            className="h-[60px] w-auto"
-          />
-        </AppStoreCTA>
-        <p className="mt-4 text-sm text-slate-500">Free to try. No account, no ads, no analytics.</p>
+type SEOViewProps = {
+  title: string;
+  intro: string;
+  sections: Array<{ title: string; body: string }>;
+  freeItems?: string[];
+  premiumItems?: string[];
+  faq?: Array<[string, string]>;
+  heroScreenshot?: string;
+};
+
+const SEOView = ({
+  title,
+  intro,
+  sections,
+  freeItems = ["Box Breathing", "4-7-8 Breathing", "iPhone and Apple Watch access", "Visual, sound and haptic guidance"],
+  premiumItems = ["Advanced breathing techniques", "Longer routines and programs", "Progress and personal insights", "One-time unlock for version 1.x"],
+  faq = [],
+  heroScreenshot = HOME_SCREENSHOT_SRC
+}: SEOViewProps) => (
+  <main className="animate-in fade-in duration-500">
+    <section className="pt-32 pb-20 md:pt-40 md:pb-28 hero-grid overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
+        <div className="max-w-2xl">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.04em] leading-[1.02] text-white mb-6">{title}</h1>
+          <p className="text-xl text-slate-300 leading-relaxed mb-8">{intro}</p>
+          <AppStoreCTA className="inline-block" ariaLabel="Download YourBreath on the App Store">
+            <img src={APP_STORE_BADGE_SRC} alt="Download on the App Store" className="h-[64px] w-auto" />
+          </AppStoreCTA>
+          <p className="mt-5 text-sm text-slate-400">
+            Box Breathing and 4-7-8 Breathing stay free forever. No account, ads or analytics.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            {["Free forever essentials", "iPhone + Apple Watch", "Private by design"].map((item) => (
+              <span key={item} className="seo-proof"><CheckCircle2 size={15} /> {item}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative min-h-[560px] md:min-h-[660px] max-w-[500px] w-full mx-auto">
+          <div className="absolute inset-8 rounded-full bg-brand-400/10 blur-3xl" aria-hidden="true"></div>
+          <div className="phone-shot absolute left-[8%] top-0 w-[60%] -rotate-3">
+            <img src={heroScreenshot} alt="Real YourBreath app screen" />
+          </div>
+          <div className="phone-shot absolute right-[2%] bottom-0 w-[48%] rotate-6">
+            <img src={SESSION_SCREENSHOT_SRC} alt="Real guided Box Breathing session in YourBreath" />
+          </div>
+        </div>
       </div>
-      <img
-        src={WATCH_APP_SCREENSHOT_SRC}
-        alt="YourBreath running on iPhone and Apple Watch"
-        className="w-full max-w-xs lg:max-w-none mx-auto rounded-[2rem] border border-white/10 shadow-2xl shadow-black/40"
-        loading="lazy"
-      />
-    </div>
-    {sections.map((section) => (
-      <ProseSection key={section.title} title={section.title}>
-        <p>{section.body}</p>
-      </ProseSection>
-    ))}
-  </PageShell>
+    </section>
+
+    <section className="py-20 border-y border-white/5 bg-[#111c32]">
+      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 md:gap-20">
+        <div>
+          <div className="flex items-center gap-3 mb-5 text-brand-300">
+            <Heart size={22} />
+            <h2 className="text-3xl font-bold text-white">Free forever</h2>
+          </div>
+          <p className="text-slate-400 mb-7">The everyday breathing tools remain useful without starting a trial or entering payment details.</p>
+          <ul className="space-y-4">
+            {freeItems.map((item) => (
+              <li key={item} className="flex gap-3 text-slate-200"><CheckCircle2 className="text-brand-300 shrink-0 mt-0.5" size={20} /> {item}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="md:border-l md:border-white/10 md:pl-16">
+          <div className="flex items-center gap-3 mb-5 text-purple-300">
+            <Zap size={22} />
+            <h2 className="text-3xl font-bold text-white">One-time Premium</h2>
+          </div>
+          <p className="text-slate-400 mb-7">Go deeper when you choose. Premium is an optional one-time unlock for version 1.x, not a recurring subscription.</p>
+          <ul className="space-y-4">
+            {premiumItems.map((item) => (
+              <li key={item} className="flex gap-3 text-slate-200"><CheckCircle2 className="text-purple-300 shrink-0 mt-0.5" size={20} /> {item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section className="py-24 bg-dark-bg">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-3xl mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-5">See the real app</h2>
+          <p className="text-lg text-slate-400">These are genuine simulator captures from YourBreath, not generated product mockups.</p>
+        </div>
+        <div className="screenshot-rail">
+          {[
+            [HOME_SCREENSHOT_SRC, "YourBreath home screen"],
+            [SESSION_SCREENSHOT_SRC, "Active Box Breathing session"],
+            [SUMMARY_SCREENSHOT_SRC, "Completed session summary"],
+            [PROGRESS_SCREENSHOT_SRC, "Private progress overview"]
+          ].map(([src, alt]) => (
+            <div className="phone-shot" key={src}>
+              <img src={src} alt={alt} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section className="py-24 bg-dark-card border-y border-white/5">
+      <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-x-16 gap-y-10">
+        {sections.map((section) => (
+          <article key={section.title}>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{section.title}</h2>
+            <p className="text-slate-400 leading-relaxed">{section.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {faq.length > 0 && (
+      <section className="py-24 bg-dark-bg">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-10">Questions people ask</h2>
+          <div className="divide-y divide-white/10">
+            {faq.map(([question, answer]) => (
+              <article key={question} className="py-6">
+                <h3 className="text-xl font-semibold text-white mb-2">{question}</h3>
+                <p className="text-slate-400 leading-relaxed">{answer}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section className="py-24 bg-gradient-to-b from-[#111c32] to-dark-bg text-center">
+      <div className="max-w-3xl mx-auto px-6">
+        <img src={APP_ICON_SRC} alt="" className="w-20 h-20 rounded-[22%] mx-auto mb-7 shadow-xl" />
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Take one quiet minute.</h2>
+        <p className="text-lg text-slate-400 mb-9">Start with the free breathing exercises on iPhone or Apple Watch.</p>
+        <AppStoreCTA className="inline-block" ariaLabel="Download YourBreath on the App Store">
+          <img src={APP_STORE_BADGE_SRC} alt="Download on the App Store" className="h-[64px] w-auto" />
+        </AppStoreCTA>
+      </div>
+    </section>
+  </main>
 );
 
 // --- Privacy Policy Component (Provided Text) ---
@@ -1286,12 +1407,15 @@ const App = () => {
 
   useEffect(() => {
     const meta = VIEW_META[currentView];
+    const canonical = `https://yourbreath.app${VIEW_PATHS[currentView]}`;
     document.title = meta.title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', meta.title);
     document.querySelector('meta[property="og:description"]')?.setAttribute('content', meta.description);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonical);
     document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', meta.title);
     document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', meta.description);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', canonical);
   }, [currentView]);
 
   const navigateTo = (view: ViewState) => {
@@ -1365,17 +1489,31 @@ const App = () => {
 
       {currentView === 'no-subscription' && (
         <SEOView
-          title="A breathing app without subscription pressure"
-          intro="YourBreath is free to try and offers Premium as a one-time unlock."
+          title="A breathing app that stays free where it matters"
+          intro="Box Breathing and 4-7-8 Breathing are free forever on iPhone and Apple Watch. You can use the core app without starting a trial, creating an account or paying every month."
           sections={[
             {
-              title: "Free to try",
-              body: "The goal is simple: a calm breathing app should not become another monthly subscription. YourBreath is designed to be useful when you need it and quiet when you do not."
+              title: "Not a short free trial",
+              body: "Free means ongoing access to the core breathing experience. Box Breathing and 4-7-8 Breathing remain available after the first day, week and month."
             },
             {
-              title: "One-time Premium",
-              body: "Premium unlocks additional breathing routines, longer sessions, programs and personal insights for version 1.x without a recurring subscription."
+              title: "No recurring charge",
+              body: "Premium is optional. It unlocks additional techniques, programs and insights through a one-time purchase for version 1.x rather than a monthly or annual subscription."
+            },
+            {
+              title: "Free on Apple Watch too",
+              body: "The free breathing exercises are available on both iPhone and Apple Watch, including calm visual guidance and haptic cues from your wrist."
+            },
+            {
+              title: "Private from the first breath",
+              body: "YourBreath does not require an account, show ads or use third-party analytics. The app is designed to help you pause without creating another data profile."
             }
+          ]}
+          faq={[
+            ["Is YourBreath really free?", "Yes. Box Breathing and 4-7-8 Breathing stay free forever on iPhone and Apple Watch."],
+            ["Does the free version expire?", "No. The core free exercises are not a time-limited trial."],
+            ["Is Premium a subscription?", "No. Premium is an optional one-time unlock for version 1.x."],
+            ["Do I need an account?", "No. You can use YourBreath without creating an account."]
           ]}
         />
       )}
@@ -1393,6 +1531,104 @@ const App = () => {
               title: "Premium variety",
               body: "Premium unlocks additional breathing routines for users who want more variety and a deeper breathing practice."
             }
+          ]}
+          heroScreenshot={SESSION_SCREENSHOT_SRC}
+          faq={[
+            ["Is Box Breathing free?", "Yes. Box Breathing stays free on iPhone and Apple Watch."],
+            ["Is 4-7-8 Breathing free?", "Yes. 4-7-8 Breathing is part of the free core experience."],
+            ["Can Apple Watch guide a session?", "Yes. YourBreath can use visual cues and haptics on Apple Watch."]
+          ]}
+        />
+      )}
+
+      {currentView === 'breathwork-app' && (
+        <SEOView
+          title="A breathwork app built for the moment you need it"
+          intro="Start guided breathwork without an account, a feed or a monthly subscription. YourBreath brings simple sessions to iPhone and Apple Watch."
+          sections={[
+            {
+              title: "Breathwork without setup",
+              body: "Open the app and begin a short session. Clear visual timing, sound and optional haptics guide the inhale, hold and exhale phases."
+            },
+            {
+              title: "Start with familiar techniques",
+              body: "Box Breathing and 4-7-8 Breathing stay free forever. Premium adds more techniques and structured programs when you want a broader practice."
+            },
+            {
+              title: "Made for iPhone and Apple Watch",
+              body: "Use the larger iPhone display at home or follow discreet haptic guidance from your wrist when looking at a screen is inconvenient."
+            },
+            {
+              title: "No attention economy",
+              body: "There are no ads, social feeds or third-party analytics. YourBreath is designed to be opened, used and put away."
+            }
+          ]}
+          heroScreenshot={SESSION_SCREENSHOT_SRC}
+          faq={[
+            ["What is a breathwork app?", "A breathwork app guides timed breathing patterns so you can follow a session without counting each phase yourself."],
+            ["Can I use YourBreath for free?", "Yes. Box Breathing and 4-7-8 Breathing stay free forever."],
+            ["Does it work on Apple Watch?", "Yes. YourBreath includes an Apple Watch experience with visual and haptic guidance."]
+          ]}
+        />
+      )}
+
+      {currentView === 'mindfulness-app' && (
+        <SEOView
+          title="A mindfulness breathing app without the noise"
+          intro="Use a short guided breath as a simple mindful pause. No account, no ads and no analytics competing for your attention."
+          sections={[
+            {
+              title: "A practical mindful pause",
+              body: "YourBreath focuses on one small action: following the next inhale and exhale. Sessions can be short enough to fit between everyday tasks."
+            },
+            {
+              title: "Gentle, not demanding",
+              body: "The app supports calm routines and private progress without a social feed or pressure to perform for anyone else."
+            },
+            {
+              title: "Private by design",
+              body: "YourBreath works without an account or advertising profile. Optional HealthKit and iCloud features stay under your Apple settings."
+            },
+            {
+              title: "On your wrist when useful",
+              body: "Apple Watch haptics can guide a breathing rhythm when you prefer not to keep looking at your phone."
+            }
+          ]}
+          faq={[
+            ["Can breathing be a mindfulness practice?", "A guided breathing session can provide a simple point of attention for a short mindful pause."],
+            ["Does YourBreath have ads?", "No. YourBreath does not show ads or use third-party analytics."],
+            ["Do I need to subscribe?", "No. Core exercises stay free, and Premium is an optional one-time unlock."]
+          ]}
+        />
+      )}
+
+      {currentView === 'meditation-app' && (
+        <SEOView
+          title="Simple breathing meditation on iPhone and Apple Watch"
+          intro="When a long meditation feels like too much, start with one guided breathing session. YourBreath keeps the experience focused and private."
+          sections={[
+            {
+              title: "Begin with the breath",
+              body: "A timed breathing pattern gives your attention a clear rhythm. Follow the visual cue, sound or haptics instead of watching a clock."
+            },
+            {
+              title: "Short sessions count",
+              body: "YourBreath supports quick everyday pauses as well as longer routines, so a breathing meditation can fit the time you actually have."
+            },
+            {
+              title: "Free practices that remain free",
+              body: "Box Breathing and 4-7-8 Breathing stay free forever on iPhone and Apple Watch."
+            },
+            {
+              title: "A quiet app, not a content feed",
+              body: "No account, advertising or third-party analytics are required. Open the app for a session, then return to your day."
+            }
+          ]}
+          heroScreenshot={SESSION_SCREENSHOT_SRC}
+          faq={[
+            ["Is YourBreath a meditation app?", "YourBreath is a guided breathing app that can support a simple breath-focused meditation practice."],
+            ["How long is a session?", "You can start with a quick session and adjust routines and duration in the app."],
+            ["Is there a free breathing meditation?", "Yes. Box Breathing and 4-7-8 Breathing stay free forever."]
           ]}
         />
       )}

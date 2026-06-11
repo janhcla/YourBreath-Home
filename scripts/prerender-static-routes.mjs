@@ -88,18 +88,25 @@ const routes = [
   },
   {
     path: '/breathing-app-without-subscription/',
-    title: 'Breathing app without subscription pressure - YourBreath',
+    title: 'Breathing App Without a Subscription | Free Forever Exercises',
     description:
-      'YourBreath is free to try and offers Premium as a one-time unlock instead of a subscription.',
+      'Box Breathing and 4-7-8 Breathing stay free forever on iPhone and Apple Watch. No account, ads or analytics. Premium is a one-time unlock.',
     keywords:
-      'breathing app without subscription, one-time purchase breathing app, no subscription breathing app, YourBreath Premium',
-    heading: 'Breathing app without subscription pressure',
+      'free breathing app, breathing app without subscription, no subscription breathing app, free forever breathing exercises, one-time purchase breathing app',
+    heading: 'A breathing app that stays free where it matters',
     body:
-      'YourBreath includes free breathing patterns and offers Premium as a one-time unlock. It is built for people who want a calm breathing app without subscription pressure.',
+      'Box Breathing and 4-7-8 Breathing stay free forever in YourBreath on iPhone and Apple Watch. The core app is not a short free trial. Premium is an optional one-time unlock for version 1.x rather than a recurring subscription.',
     details: [
-      'Box Breathing and 4-7-8 breathing are included for free.',
+      'Box Breathing and 4-7-8 Breathing remain free after the first day, week and month.',
+      'The free exercises work on both iPhone and Apple Watch.',
       'Premium unlocks deeper tools, longer routines and personal insights.',
       'Premium is a one-time unlock for version 1.x rather than a subscription.'
+    ],
+    faq: [
+      ['Is YourBreath really free?', 'Yes. Box Breathing and 4-7-8 Breathing stay free forever on iPhone and Apple Watch.'],
+      ['Does the free version expire?', 'No. The core free exercises are not a time-limited trial.'],
+      ['Is Premium a subscription?', 'No. Premium is an optional one-time unlock for version 1.x.'],
+      ['Do I need an account?', 'No. You can use YourBreath without creating an account.']
     ]
   },
   {
@@ -116,6 +123,54 @@ const routes = [
       'Box Breathing uses equal inhale, hold, exhale and hold phases.',
       '4-7-8 breathing uses a slower inhale, hold and exhale rhythm for winding down.',
       'Premium techniques are clearly marked as Premium in the app and on the website.'
+    ]
+  },
+  {
+    path: '/breathwork-app/',
+    title: 'Breathwork App for iPhone & Apple Watch | YourBreath',
+    description:
+      'A private breathwork app with guided Box Breathing, 4-7-8 Breathing and Apple Watch haptics. Core exercises stay free forever.',
+    keywords:
+      'breathwork app, guided breathwork app, breathwork app Apple Watch, breathwork iPhone, free breathwork exercises',
+    heading: 'A breathwork app built for the moment you need it',
+    body:
+      'YourBreath guides timed breathing patterns on iPhone and Apple Watch with visual, sound and haptic cues. Box Breathing and 4-7-8 Breathing stay free forever, with no account, ads or third-party analytics.',
+    details: [
+      'Start short breathwork sessions without creating an account.',
+      'Use visual, sound or haptic guidance on iPhone and Apple Watch.',
+      'Optional Premium is a one-time unlock for version 1.x.'
+    ]
+  },
+  {
+    path: '/mindfulness-breathing-app/',
+    title: 'Mindfulness Breathing App Without Ads | YourBreath',
+    description:
+      'Take a quiet mindful pause with guided breathing on iPhone and Apple Watch. No account, no ads and no analytics.',
+    keywords:
+      'mindfulness breathing app, mindfulness app without ads, private mindfulness app, Apple Watch mindfulness breathing',
+    heading: 'A mindfulness breathing app without the noise',
+    body:
+      'YourBreath supports short mindful pauses through guided breathing on iPhone and Apple Watch. The app works without accounts, ads, social feeds or third-party analytics.',
+    details: [
+      'Follow the next inhale and exhale with calm visual or haptic cues.',
+      'Box Breathing and 4-7-8 Breathing stay free forever.',
+      'Optional HealthKit and iCloud features remain under Apple settings.'
+    ]
+  },
+  {
+    path: '/breathing-meditation-app/',
+    title: 'Simple Breathing Meditation App | YourBreath',
+    description:
+      'Use short guided breathing sessions as a simple meditation practice on iPhone and Apple Watch. Start without an account or subscription.',
+    keywords:
+      'breathing meditation app, guided breathing meditation, meditation app Apple Watch, simple meditation app, free breathing meditation',
+    heading: 'Simple breathing meditation on iPhone and Apple Watch',
+    body:
+      'YourBreath provides a clear breathing rhythm for a simple breath-focused meditation practice. Start a quick session without an account, advertising or a recurring subscription.',
+    details: [
+      'Follow timed visual, sound or haptic guidance instead of watching a clock.',
+      'Use quick sessions or adjust the routine and duration.',
+      'Box Breathing and 4-7-8 Breathing stay free forever.'
     ]
   },
   {
@@ -191,6 +246,20 @@ const buildRouteHtml = (template, route) => {
   const escapedKeywords = escapeHtml(route.keywords);
   const escapedCanonical = escapeHtml(canonical);
   const staticFallback = buildStaticFallback(route);
+  const faqSchema = route.faq
+    ? `<script type="application/ld+json">${JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: route.faq.map(([question, answer]) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: answer
+          }
+        }))
+      }).replaceAll('<', '\\u003c')}</script>`
+    : '';
 
   let html = template;
   html = replaceTag(html, /<title>.*?<\/title>/s, `<title>${escapedTitle}</title>`);
@@ -233,6 +302,9 @@ const buildRouteHtml = (template, route) => {
     '<meta name="robots" content="index, follow" />',
     `<meta name="robots" content="index, follow" />\n    <meta name="keywords" content="${escapedKeywords}" />`
   );
+  if (faqSchema) {
+    html = html.replace('</head>', `    ${faqSchema}\n  </head>`);
+  }
   html = html.replace('<div id="root"></div>', `<div id="root">${staticFallback}\n    </div>`);
   return html;
 };
