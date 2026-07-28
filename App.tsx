@@ -15,7 +15,8 @@ import {
   FileText,
   HelpCircle,
   ArrowRight,
-  Heart
+  Heart,
+  MessageCircle
 } from 'lucide-react';
 
 // --- Types ---
@@ -30,6 +31,12 @@ const SUMMARY_SCREENSHOT_SRC = "/screenshots/session-complete.jpg";
 const PROGRESS_SCREENSHOT_SRC = "/screenshots/progress.jpg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
 const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
+const COMMUNITY_URL = "https://feedback.yourbreath.app";
+const COMMUNITY_IDEAS_URL = COMMUNITY_URL + "/ideas";
+const COMMUNITY_ROADMAP_URL = COMMUNITY_URL + "/roadmap";
+const COMMUNITY_SHIPPED_URL = COMMUNITY_URL + "/shipped";
+const COMMUNITY_PRIVACY_URL = COMMUNITY_URL + "/privacy";
+const COMMUNITY_TERMS_URL = COMMUNITY_URL + "/terms";
 
 const VIEW_PATHS: Record<ViewState, string> = {
   home: '/',
@@ -397,6 +404,14 @@ const Navigation = ({
           >
             Support
           </button>
+          <a
+            href={COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-300 hover:text-brand-200 text-sm font-semibold transition-colors"
+          >
+            Community
+          </a>
           <AppStoreCTA
             className="bg-white text-dark-bg px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-brand-50 transition-colors shadow-lg shadow-white/5"
           >
@@ -451,6 +466,14 @@ const Navigation = ({
           >
             Support
           </button>
+          <a
+            href={COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-left text-brand-300 hover:text-brand-200 py-2 font-semibold"
+          >
+            Community
+          </a>
           <AppStoreCTA
             className="bg-brand-600 text-white text-center py-3 rounded-lg font-semibold"
           >
@@ -469,7 +492,7 @@ const Footer = ({
 }) => (
   <footer className="bg-dark-bg border-t border-white/5 pt-16 pb-8">
     <div className="max-w-7xl mx-auto px-6">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-12 mb-12">
         <div className="col-span-1 md:col-span-1">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-500 to-purple-500 flex items-center justify-center text-white">
@@ -502,6 +525,17 @@ const Footer = ({
             <li><button onClick={() => onChangeView('no-subscription')} className="hover:text-brand-400">No Subscription</button></li>
             <li><button onClick={() => onChangeView('mindfulness-app')} className="hover:text-brand-400">Mindfulness</button></li>
             <li><button onClick={() => onChangeView('meditation-app')} className="hover:text-brand-400">Breathing Meditation</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-white font-semibold mb-4">Community</h4>
+          <ul className="space-y-2 text-sm text-slate-400">
+            <li><a href={COMMUNITY_IDEAS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand-400">Ideas</a></li>
+            <li><a href={COMMUNITY_ROADMAP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand-400">Roadmap</a></li>
+            <li><a href={COMMUNITY_SHIPPED_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand-400">Shipped</a></li>
+            <li><a href={COMMUNITY_PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand-400">Community Privacy</a></li>
+            <li><a href={COMMUNITY_TERMS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brand-400">Community Terms</a></li>
           </ul>
         </div>
 
@@ -844,7 +878,7 @@ const PrivacyFeature = ({ onChangeView }: { onChangeView: (view: ViewState) => v
     <div className="max-w-4xl mx-auto px-6 text-center">
       <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Privacy is a product feature</h2>
       <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-        Your sessions, reminders, reflections, and progress insights are stored locally on iPhone and Apple Watch. HealthKit is optional. iCloud sync is controlled by your Apple ID account, and the developer cannot see your data.
+        Your sessions, reminders, reflections, and progress insights are stored locally on iPhone and Apple Watch. HealthKit is optional. iCloud sync is controlled by your Apple ID account, and the developer cannot see your data. Your breathing sessions, progress and HealthKit information are never sent to YourBreath Community.
       </p>
       <button 
         onClick={() => { onChangeView('privacy'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -881,6 +915,44 @@ const DownloadCTA = () => (
   </section>
 );
 
+const CommunityCTA = () => (
+  <section className="py-24 bg-[#111c32] border-y border-white/5">
+    <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-3xl">
+        <div className="flex items-center gap-3 mb-5 text-brand-300">
+          <MessageCircle size={24} />
+          <span className="text-sm font-semibold uppercase tracking-[0.18em]">YourBreath Community</span>
+        </div>
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Help shape what comes next</h2>
+        <p className="text-slate-300 text-lg leading-relaxed mb-8">
+          YourBreath is continually evolving — and some of the best ideas can come from the people who use it. Visit the YourBreath Community to suggest a feature, vote for ideas you would like to see, and follow what we are exploring, building and shipping.
+        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <a
+            href={COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-400 text-slate-950 px-5 py-3 rounded-xl font-semibold transition-colors"
+          >
+            Help shape YourBreath <ArrowRight size={18} />
+          </a>
+          <a
+            href={COMMUNITY_ROADMAP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-brand-300 hover:text-brand-200 font-semibold transition-colors"
+          >
+            View the roadmap <ArrowRight size={18} />
+          </a>
+        </div>
+        <p className="mt-6 text-sm text-slate-400">
+          No account is needed to browse, vote or suggest an idea. Optional Community sign-in lets you keep track of your activity across devices and follow ideas you care about.
+        </p>
+      </div>
+    </div>
+  </section>
+);
+
 const FAQ = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
   <section className="py-24 bg-dark-bg border-t border-white/5">
     <div className="max-w-4xl mx-auto px-6">
@@ -893,7 +965,9 @@ const FAQ = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
           ["Does YourBreath require an account?", "No. YourBreath does not require account creation."],
           ["Does YourBreath use ads or analytics?", "No. The app does not show ads and does not use third-party analytics."],
           ["Is Premium a subscription?", "No. Premium is offered as a one-time unlock for version 1.x."],
-          ["Does YourBreath replace healthcare?", "No. YourBreath is a simple wellness tool for guided breathing and everyday pauses. It is not a medical treatment and does not replace professional healthcare."]
+          ["Does YourBreath replace healthcare?", "No. YourBreath is a simple wellness tool for guided breathing and everyday pauses. It is not a medical treatment and does not replace professional healthcare."],
+          ["Does YourBreath Community require an account?", "No. You can browse ideas, vote and suggest features without signing in. Optional Community sign-in helps you keep activity across devices and follow status changes."],
+          ["Why does YourBreath have a Community?", "Community gives you a simple way to suggest improvements, support ideas from other users and see what is being considered, built and released. Votes help guide priorities, but feasibility, privacy, accessibility and product fit matter too."]
         ].map(([question, answer]) => (
           <div key={question} className="bg-dark-card border border-white/5 rounded-2xl p-6">
             <h3 className="text-lg font-bold text-white mb-2">{question}</h3>
@@ -1183,7 +1257,7 @@ const PrivacyPolicyView = () => (
       <section className="mb-8 bg-dark-card p-6 rounded-2xl border border-white/5">
         <h2 className="text-xl font-bold text-white mb-3">Data Sharing</h2>
         <p className="text-slate-400 leading-relaxed">
-          YourBreath does not transmit, sell, or share personal data with developers or third parties. HealthKit data remains within HealthKit and your device. Optional iCloud sync is handled by Apple under your Apple ID.
+          YourBreath does not transmit, sell, or share personal data with developers or third parties. HealthKit data remains within HealthKit and your device. Optional iCloud sync is handled by Apple under your Apple ID. Your breathing sessions, HealthKit information and progress history are never sent to YourBreath Community. Community participation is optional and governed by the <a href={COMMUNITY_PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300">separate Community Privacy Notice</a>.
         </p>
       </section>
 
@@ -1445,6 +1519,7 @@ const App = () => {
           <Premium />
           <PrivacyFeature onChangeView={navigateTo} />
           <FAQ onChangeView={navigateTo} />
+          <CommunityCTA />
           <DownloadCTA />
         </main>
       )}
@@ -1477,7 +1552,7 @@ const App = () => {
           sections={[
             {
               title: "Private by design",
-              body: "You do not need to create an account. You do not see ads. Your app usage is not tracked with analytics. Your breathing sessions stay with you."
+              body: "You do not need to create an account. You do not see ads. Your app usage is not tracked with analytics. Your breathing sessions, progress and HealthKit information stay private and are never sent to YourBreath Community. Community participation is optional and uses a separate web identity."
             },
             {
               title: "Respectful breathing practice",
