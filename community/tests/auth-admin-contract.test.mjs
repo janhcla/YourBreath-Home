@@ -7,11 +7,14 @@ const api = await readFile(new URL("../worker/api.ts", import.meta.url), "utf8")
 const admin = await readFile(new URL("../worker/admin.ts", import.meta.url), "utf8");
 
 test("Apple flow stores hashed state and verifies the provider identity", () => {
+  assert.match(auth, /response_mode.*form_post/);
+  assert.match(auth, /request\.formData\(\)/);
   assert.match(auth, /hashToken\(state\)/);
   assert.match(auth, /used_at IS NULL/);
   assert.match(auth, /jwtVerify/);
   assert.match(auth, /nonce_hash/);
   assert.match(auth, /Set-Cookie/);
+  assert.match(api, /request\.method === "POST".*\/api\/auth\/apple\/callback/s);
 });
 
 test("admin API is server-role guarded and audited", () => {
@@ -21,4 +24,3 @@ test("admin API is server-role guarded and audited", () => {
   assert.match(admin, /suggestion_status_history/);
   assert.match(admin, /notifications/);
 });
-

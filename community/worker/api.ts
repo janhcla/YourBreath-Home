@@ -66,11 +66,14 @@ export async function handleApi(request: Request, env: Env, ctx: ExecutionContex
   if (!path.startsWith("/api")) return errorResponse("Not found", 404);
   const write = !["GET", "HEAD", "OPTIONS"].includes(request.method);
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { allow: "GET, POST, PUT, PATCH, OPTIONS" } });
-  if (write && !isSameOrigin(request)) return errorResponse("Cross-origin request rejected", 403);
 
   try {
+    // Apple posts the authorization result cross-origin when response_mode=form_post.
+    if ((request.method === "GET" || request.method === "POST") && path === "/api/auth/apple/callback") {
+      return await completeAppleSignIn(request, env);
+    }
+    if (write && !isSameOrigin(request)) return errorResponse("Cross-origin request rejected", 403);
     if (request.method === "GET" && path === "/api/auth/apple/start") return await startAppleSignIn(request, env);
-    if (request.method === "GET" && path === "/api/auth/apple/callback") return await completeAppleSignIn(request, env);
     if (request.method === "POST" && path === "/api/auth/logout") return await logout(request, env);
 
     const identity = await requireIdentity(env, request);

@@ -31,7 +31,8 @@ export function appleRedirectUri(request: Request) {
 export function buildAppleAuthorizeUrl(request: Request, clientId: string, state: string, nonce: string) {
   const url = new URL(APPLE_AUTHORIZE_URL);
   url.searchParams.set("response_type", "code");
-  url.searchParams.set("response_mode", "query");
+  // Apple requires form_post whenever name or email scopes are requested.
+  url.searchParams.set("response_mode", "form_post");
   url.searchParams.set("client_id", clientId);
   url.searchParams.set("redirect_uri", appleRedirectUri(request));
   url.searchParams.set("scope", "name email");
@@ -69,9 +70,11 @@ async function exchangeCode(request: Request, env: Env, code: string) {
 }
 
 export async function completeAppleSignIn(request: Request, env: Env) {
-  const url = new URL(request.url);
-  const state = url.searchParams.get("state");
-  const code = url.searchParams.get("code");
+  const params = request.method === "POST"
+    ? await request.formData()
+    : new URL(request.url).searchParams;
+  const state = params.get("state");
+  const code = params.get("code");
   if (!state || !code) throw new Error("Apple authorization response is incomplete");
   const nonce = await env.DB.prepare("SELECT state_hash, nonce_hash, return_path FROM auth_nonces WHERE state_hash = ? AND used_at IS NULL AND expires_at > CURRENT_TIMESTAMP").bind(await hashToken(state)).first<{ state_hash: string; nonce_hash: string; return_path: string }>();
   if (!nonce) throw new Error("Apple authorization state is invalid or expired");
