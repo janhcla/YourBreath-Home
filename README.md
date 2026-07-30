@@ -31,3 +31,13 @@ npm run deploy
 ```
 
 Do not use `npx wrangler deploy` here; that targets Workers, not this Pages site.
+
+## YourBreath Community
+
+The public feedback site is maintained separately under [`community/`](community/)
+and deploys as the Cloudflare Worker `yourbreath-community` at
+<https://feedback.yourbreath.app>. It has its own Worker/D1 configuration and
+does not replace the `yourbreath` Pages project that serves this marketing
+site. GitHub Actions deploys Community changes from `main` when the
+`CLOUDFLARE_API_TOKEN` repository secret is configured with Workers Scripts and
+D1 permissions.

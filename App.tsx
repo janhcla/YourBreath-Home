@@ -881,6 +881,26 @@ const DownloadCTA = () => (
   </section>
 );
 
+const CommunityCTA = () => (
+  <section id="community" className="py-20 bg-dark-card border-y border-white/5">
+    <div className="max-w-4xl mx-auto px-6 text-center">
+      <p className="text-brand-300 font-semibold uppercase tracking-[0.18em] text-xs mb-4">Help shape what’s next</p>
+      <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">YourBreath Community</h2>
+      <p className="text-slate-400 text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+        Suggest features, vote on ideas and follow the public roadmap. Community is a separate feedback space; your breathing sessions and HealthKit data stay out of it.
+      </p>
+      <a
+        href="https://feedback.yourbreath.app"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 text-brand-300 font-semibold hover:text-brand-200 transition-colors"
+      >
+        Visit YourBreath Community <ArrowRight size={18} />
+      </a>
+    </div>
+  </section>
+);
+
 const FAQ = ({ onChangeView }: { onChangeView: (view: ViewState) => void }) => (
   <section className="py-24 bg-dark-bg border-t border-white/5">
     <div className="max-w-4xl mx-auto px-6">
@@ -1444,6 +1464,7 @@ const App = () => {
           <WatchShowcase />
           <Premium />
           <PrivacyFeature onChangeView={navigateTo} />
+          <CommunityCTA />
           <FAQ onChangeView={navigateTo} />
           <DownloadCTA />
         </main>
