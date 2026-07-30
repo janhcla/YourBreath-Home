@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const anonymousParticipants = sqliteTable("anonymous_participants", {
   id: text("id").primaryKey(),
@@ -11,9 +11,10 @@ export const profiles = sqliteTable("profiles", {
   id: text("id").primaryKey(),
   displayName: text("display_name"),
   email: text("email"),
+  appleSubject: text("apple_subject"),
   role: text("role", { enum: ["user", "admin"] }).notNull().default("user"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-});
+}, (table) => ({ appleSubjectUnique: uniqueIndex("profiles_apple_subject_unique").on(table.appleSubject) }));
 
 export const categories = sqliteTable("categories", {
   id: text("id").primaryKey(),
@@ -83,3 +84,54 @@ export const reports = sqliteTable("reports", {
   status: text("status", { enum: ["open", "reviewed", "dismissed"] }).notNull().default("open"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const sessions = sqliteTable("sessions", {
+  idHash: text("id_hash").primaryKey(),
+  profileId: text("profile_id").notNull().references(() => profiles.id),
+  anonymousParticipantId: text("anonymous_participant_id").references(() => anonymousParticipants.id),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  lastSeenAt: text("last_seen_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: text("expires_at").notNull(),
+}, (table) => ({ profileExpiry: index("sessions_profile_idx").on(table.profileId, table.expiresAt), expiry: index("sessions_expiry_idx").on(table.expiresAt) }));
+
+export const authNonces = sqliteTable("auth_nonces", {
+  stateHash: text("state_hash").primaryKey(),
+  nonceHash: text("nonce_hash").notNull(),
+  returnPath: text("return_path").notNull(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: text("expires_at").notNull(),
+  usedAt: text("used_at"),
+}, (table) => ({ expiry: index("auth_nonces_expiry_idx").on(table.expiresAt) }));
+
+export const auditLog = sqliteTable("audit_log", {
+  id: text("id").primaryKey(),
+  actorProfileId: text("actor_profile_id").references(() => profiles.id),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id"),
+  metadataJson: text("metadata_json"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => ({ created: index("audit_log_created_idx").on(table.createdAt), entity: index("audit_log_entity_idx").on(table.entityType, table.entityId, table.createdAt) }));
+
+export const notifications = sqliteTable("notifications", {
+  id: text("id").primaryKey(),
+  profileId: text("profile_id").notNull().references(() => profiles.id),
+  suggestionId: text("suggestion_id").references(() => suggestions.id),
+  type: text("type").notNull(),
+  message: text("message").notNull(),
+  isRead: integer("is_read", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => ({ profile: index("notifications_profile_idx").on(table.profileId, table.isRead, table.createdAt) }));
+
+export const notificationPreferences = sqliteTable("notification_preferences", {
+  profileId: text("profile_id").primaryKey().references(() => profiles.id),
+  statusUpdates: integer("status_updates", { mode: "boolean" }).notNull().default(true),
+  commentReplies: integer("comment_replies", { mode: "boolean" }).notNull().default(true),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const rateLimitEvents = sqliteTable("rate_limit_events", {
+  id: text("id").primaryKey(),
+  bucket: text("bucket").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, (table) => ({ bucket: index("rate_limit_events_bucket_idx").on(table.bucket, table.createdAt) }));

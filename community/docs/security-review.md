@@ -2,32 +2,44 @@
 
 ## Scope
 
-This review covers the published front-end prototype and the documented production data contract.
+This review covers the D1-backed Worker implementation, browser client and
+deployment configuration.
 
 ## Findings
 
-### High — production persistence and authorization are not provisioned
+### Closed — production persistence and authorization implementation
 
-`.openai/hosting.json` currently has no D1 binding and no Supabase connection. The visible app therefore uses localStorage and explicitly labels sign-in/admin behavior as preview-only. Do not launch anonymous voting, public submissions or admin moderation as a production service until server operations, database authorization and abuse controls are connected.
+The Worker now owns public `/api` routes, D1 is canonical, anonymous ids are
+opaque hashed cookie identities, authenticated sessions are opaque hashed
+tokens, and admin routes require the server-side `admin` profile role. The
+frontend no longer reads or writes Community localStorage.
 
-### High — Sign in with Apple is not live
+### Open provider gate — Sign in with Apple secrets and callback
 
-The “Sign in with Apple” action currently represents the intended production flow locally. Before production use, configure the callback, nonce/state validation, account-linking and claim-later transaction. Never accept a browser-supplied role or user id.
+The Worker implements Apple authorization-code exchange, hashed state/nonce
+records, Apple JWKS verification, profile upsert, anonymous claim-later and
+opaque session creation. The five required secrets and Apple Service ID/return
+URL still need to be configured and tested in the target Cloudflare account.
+Never accept a browser-supplied role or user id.
 
-### Medium — anonymous abuse controls are documented but not active
+### Closed in code — anonymous abuse controls
 
-The production API must add request limits, input caps, sanitisation, moderation queues and risk-triggered challenge handling. The current local preview cannot provide meaningful abuse protection.
+The API applies body-size and field-length caps, same-origin checks, D1-backed
+per-identity rate-limit buckets, allowlists, report intake and server-side
+moderation. Turnstile is intentionally not enabled by this task; it can be
+added later only as a separate abuse-risk decision.
 
-### Low — local browser state is user-controlled
+### Closed — local browser state is user-controlled
 
-This is intentional for the preview and is never a canonical vote count or admin source. Replace it with server responses before communicating synchronized counts or cross-device activity.
+Community data is now returned by the Worker and D1. The browser holds only
+opaque cookies and transient UI state.
 
 ## Controls required before production backend launch
 
 - Server-side opaque anonymous identity; no fingerprinting and no IP-based canonical identity.
 - Separate unique vote constraints for authenticated and anonymous identity, plus an exactly-one-identity check.
 - Transactional claim-later and duplicate merge operations.
-- RLS policies for public reads, own activity, signed-in comments and admin-only moderation.
+- D1 query boundaries for public reads, own activity, signed-in comments and admin-only moderation.
 - Output escaping/sanitisation and content reports.
 - HttpOnly, SameSite cookies, CSRF/origin validation and rate limits.
 - Audit trail for status changes, merges, hides, deletes and role changes.
@@ -35,4 +47,7 @@ This is intentional for the preview and is never a canonical vote count or admin
 
 ## Conclusion
 
-The front-end is safe to share as a clearly labelled prototype checkpoint. It is not yet a production community backend. The deployment must remain in prototype/feedback mode until the high findings are closed.
+The implementation is ready for a controlled Worker deployment once the target
+Cloudflare token has D1/Workers permissions and the Apple secrets are set. The
+“Under construction” notice remains intentionally visible until those live
+provider gates and browser verification are complete.

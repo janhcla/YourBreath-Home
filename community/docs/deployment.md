@@ -28,13 +28,28 @@ record and TLS termination.
 
 ## Marketing-site integration
 
-The exact copy and link plan is in `docs/marketing-integration.md`. The existing `yourbreath.app` source was not changed in this checkpoint because it is not available as a local Sites checkout in this workspace. Apply that compact section after the custom domain is active, keeping the app Privacy Policy and Community Privacy Notice as separate links.
+The root marketing source now contains a compact, accessible Community section in
+`../App.tsx` linking to `https://feedback.yourbreath.app`. It describes ideas,
+votes and the public roadmap and explicitly keeps breathing sessions and
+HealthKit data separate.
 
 ## Production backend gate
 
-The two Drizzle migrations are applied to the new D1 database. The current
-front-end checkpoint still uses browser-local state and its sign-in/admin
-controls are preview-only. Do not communicate synchronized voting, public
-submission persistence, authenticated comments/follows, or server-side
-moderation as live until the API, identity, rate limits and authorization
-controls are implemented.
+`community/drizzle/0002_production_backend.sql` adds sessions, Apple auth state,
+notifications, audit records, preferences and rate-limit events. The deployment
+workflow runs the idempotent `scripts/apply-production-migration.sh`, which
+checks for `profiles.apple_subject` before applying the single production
+migration. It does not replay the original baseline SQL.
+
+Required Worker secrets (values never belong in git or chat):
+
+- `APPLE_TEAM_ID`
+- `APPLE_KEY_ID`
+- `APPLE_CLIENT_ID`
+- `APPLE_PRIVATE_KEY`
+- `COMMUNITY_ADMIN_APPLE_SUBJECT`
+
+The first four enable Sign in with Apple; the last one selects the verified
+Apple subject allowed to administer Community. Until those secrets are set and
+an Apple callback is tested, the public anonymous feedback loop can run but
+sign-in and admin remain intentionally unavailable.

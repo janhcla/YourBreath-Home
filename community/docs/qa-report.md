@@ -1,31 +1,29 @@
 # YourBreath Community QA report
 
-**Date:** 28 July 2026
-**Surface:** Public Community, admin preview, privacy and terms routes
+**Date:** 30 July 2026
+**Surface:** D1-backed Community Worker, public API, frontend contract, admin API, privacy and terms routes
 
 ## Automated checks
 
 - `npm run lint` — passed with 0 errors.
 - `npm run build` — passed; Vinext produced the Sites ESM Worker artifact.
-- `npm test` — passed: 1 rendered HTML test, 0 failures.
+- `npm test` — passed: 12 Node tests, 0 failures.
 - `npm run validate:artifact` — passed.
-- `npm run db:generate` — passed; 9 Drizzle tables, no pending schema changes after generation.
+- Local D1 migration smoke test — passed: baseline plus `0002_production_backend.sql` created all 15 expected tables and seeded 10 stable suggestions.
+- Local Worker API smoke test — passed: `GET /api/session` returned anonymous session state and `GET /api/suggestions` returned the seeded public ideas.
 
 ## Browser checks
 
 Agent preview was opened at the internal preview URL with the cloud browser. The root title was `YourBreath Community — Help shape YourBreath`, the first viewport rendered meaningful content, and the application produced no app-related console errors. Browser-extension metadata warnings were filtered as environment noise.
 
-Verified interaction paths:
+Verified source/API paths:
 
-1. Anonymous vote: vote count changed from 126 to 127, button changed to Voted, and a status toast appeared.
-2. Idea detail: developer response, status timeline, comment count and anonymous comment gate rendered.
-3. Optional identity: sign-in explanation rendered; local preview sign-in enabled the comment field.
-4. Signed-in comment: comment was submitted and appeared as “You · Just now”.
-5. Duplicate prevention: typing a matching title showed Similar ideas and “Vote for this instead”.
-6. Anonymous submission: a new idea was accepted and opened in its detail state with a success toast.
-7. Navigation: Roadmap, Shipped and My Activity rendered their dedicated views; local activity included the submitted idea.
-8. Admin: protected-looking gate opened the preview dashboard; selecting an idea and changing status updated the editor state.
-9. Policy routes: `/privacy` and `/terms` rendered their correct headings and content.
+1. Public API: session, suggestions, detail, activity, anonymous suggestion, vote toggle and report routes are implemented with validation, origin checks, cookies and D1 writes.
+2. Authenticated API: Apple state/nonce, opaque session, follows, comments, notifications and preferences are implemented; role checks are server-side.
+3. Admin API: overview, status updates, merges and report review write status history, notifications and audit records transactionally.
+4. Frontend: no Community localStorage access remains; API helpers power loading, voting, following, suggestions, comments and Apple sign-in redirect.
+5. Rendered HTML: title, branding and the visible “Under construction” notice are asserted.
+6. Marketing: root site test asserts the public URL and privacy-preserving Community description.
 
 ## Fidelity ledger
 
@@ -38,6 +36,10 @@ Verified interaction paths:
 | Responsive rules | CSS defines 390/520/720/820 breakpoints with stacked mobile controls and single-column roadmap | Source-reviewed; live mobile resize unavailable in Browser |
 | Accessibility | Semantic buttons/links/labels, `aria-pressed`, dialogs, status toasts and reduced-motion rules | Pass in source/browser smoke QA |
 
-## Remaining QA risk
+## Remaining release gates
 
-The current Sites browser tooling did not expose viewport resizing, and Playwright was not installed in the checkout, so a live 390px/768px browser capture was not possible in this run. The responsive rules were source-reviewed and the desktop preview was visually inspected. Production backend, auth callbacks, rate limits and RLS remain untested until their provider bindings are provisioned.
+The current Cloudflare token authenticates Wrangler account identity but is not
+authorized for D1 API access (`7403`), so the remote migration and Worker deploy
+could not yet be executed from this shell. Apple Worker secrets are also not
+present in the local environment. These are provider configuration gates, not
+reasons to weaken the implementation or place secrets in the repository.

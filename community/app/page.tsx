@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { createComment as apiCreateComment, createSuggestion as apiCreateSuggestion, fetchActivity, fetchSession, fetchSuggestion, fetchSuggestions, signInWithApple, toggleFollow as apiToggleFollow, toggleVote as apiToggleVote } from "./community-api";
 
 type Status = "New" | "Under review" | "Planned" | "In progress" | "Shipped" | "Not planned";
 type View = "ideas" | "roadmap" | "shipped" | "activity";
@@ -18,10 +19,13 @@ type Idea = {
   author: string;
   developerResponse?: string;
   comments: Comment[];
+  commentCount?: number;
   isShipped?: boolean;
   version?: string;
   availability?: string;
   isPinned?: boolean;
+  viewerVoted?: boolean;
+  viewerFollowed?: boolean;
 };
 
 const categories = [
@@ -40,107 +44,6 @@ const categories = [
 ];
 const statuses: Status[] = ["New", "Under review", "Planned", "In progress", "Shipped", "Not planned"];
 
-const seededIdeas: Idea[] = [
-  {
-    id: "saved-rhythms",
-    title: "Save multiple custom breathing rhythms",
-    description: "I’d love to keep a few personal rhythms ready to switch between, depending on how much time I have.",
-    category: "Sessions & customisation",
-    status: "Under review",
-    votes: 126,
-    submitted: "2 days ago",
-    author: "Developer idea",
-    developerResponse: "This fits the calm, low-friction direction well. I’m looking at how to make switching simple without turning the home screen into a settings panel.",
-    comments: [{ id: "c1", author: "Maya", body: "A short version for busy afternoons would be lovely.", date: "Yesterday" }],
-    isPinned: true,
-  },
-  {
-    id: "program-calendar",
-    title: "A gentle calendar for guided programs",
-    description: "A simple week view could help me see the next practice without making breathing feel like another task to manage.",
-    category: "Programs",
-    status: "Planned",
-    votes: 84,
-    submitted: "5 days ago",
-    author: "Developer idea",
-    developerResponse: "Planned. The important part is keeping it supportive rather than streak-driven, with room to miss a day without feeling behind.",
-    comments: [{ id: "c2", author: "Jonas", body: "Please keep the calendar quiet and optional.", date: "3 days ago" }],
-  },
-  {
-    id: "spoken-cues",
-    title: "Optional spoken phase cues",
-    description: "A clear voice cue for inhale and exhale would make sessions more accessible when I’m not looking at the screen.",
-    category: "Accessibility",
-    status: "In progress",
-    votes: 71,
-    submitted: "1 week ago",
-    author: "Developer idea",
-    developerResponse: "I’m testing how this can work alongside the existing visual, sound and haptic cues without making the experience feel busy.",
-    comments: [],
-  },
-  {
-    id: "watch-program-day",
-    title: "Show the next program day on Apple Watch",
-    description: "If I’m following a program, I’d like the watch to gently point me to the next session when I have a moment.",
-    category: "Apple Watch",
-    status: "Under review",
-    votes: 58,
-    submitted: "1 week ago",
-    author: "Developer idea",
-    comments: [],
-  },
-  {
-    id: "practice-summary",
-    title: "Export a simple practice summary",
-    description: "A private, readable summary of my own practice would help me reflect without exporting raw health data.",
-    category: "Progress & insights",
-    status: "New",
-    votes: 49,
-    submitted: "2 weeks ago",
-    author: "Developer idea",
-    comments: [],
-  },
-  {
-    id: "reminder-pause",
-    title: "Pause reminders for a day",
-    description: "Sometimes a day is already full. A gentle one-day pause would feel better than turning reminders off completely.",
-    category: "Reminders & habits",
-    status: "New",
-    votes: 36,
-    submitted: "2 weeks ago",
-    author: "Developer idea",
-    comments: [],
-  },
-  {
-    id: "haptic-finish",
-    title: "Choose a quieter session finish",
-    description: "Let me choose between the current completion cue and a softer ending when I’m practising in bed or at work.",
-    category: "Apple Watch",
-    status: "New",
-    votes: 31,
-    submitted: "3 weeks ago",
-    author: "Developer idea",
-    comments: [],
-  },
-  {
-    id: "private-widget",
-    title: "A small widget for a calm moment",
-    description: "A private widget that opens a favourite free breathing exercise could make it easier to start without searching.",
-    category: "Widgets & complications",
-    status: "Not planned",
-    votes: 22,
-    submitted: "1 month ago",
-    author: "Developer idea",
-    developerResponse: "Not planned for the current release direction. The app’s one-tap home and Watch complications already cover the quickest path, but I’ll keep listening.",
-    comments: [],
-  },
-];
-
-const shipped: Idea[] = [
-  { id: "shipped-watch", title: "Quick breathing sessions on Apple Watch", description: "Start a short breathing session from the Watch, with gentle visual and haptic guidance.", category: "Apple Watch", status: "Shipped", votes: 148, submitted: "Earlier Community idea", author: "YourBreath team", isShipped: true, availability: "Available in the current YourBreath app", comments: [] },
-  { id: "shipped-progress", title: "Narrative progress insights", description: "See the meaning behind your practice with calm, contextual progress reflections.", category: "Progress & insights", status: "Shipped", votes: 103, submitted: "Earlier Community idea", author: "YourBreath team", isShipped: true, availability: "Available in the current YourBreath app", comments: [] },
-];
-
 function initialView(): View {
   if (typeof window === "undefined") return "ideas";
   const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -150,17 +53,34 @@ function initialView(): View {
   return "ideas";
 }
 
-function makeParticipantId() {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return `anon-${Math.random().toString(36).slice(2)}-${Date.now()}`;
-}
-
 function statusIcon(status: Status) {
   return { New: "✦", "Under review": "◌", Planned: "◎", "In progress": "↗", Shipped: "✓", "Not planned": "–" }[status];
 }
 
 function formatVotes(votes: number) {
   return new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(votes);
+}
+
+function mapSuggestion(item: { id: string; title: string; description: string; category: string; status: string; votes: number; comments: number; submitted: string; author: string; developerResponse: string | null; isPinned: boolean; isShipped: boolean; version: string | null; availability: string | null; viewerVoted: boolean; viewerFollowed: boolean }): Idea {
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    category: item.category,
+    status: item.status as Status,
+    votes: item.votes,
+    submitted: item.submitted,
+    author: item.author,
+    developerResponse: item.developerResponse ?? undefined,
+    comments: [],
+    commentCount: item.comments,
+    isShipped: item.isShipped,
+    version: item.version ?? undefined,
+    availability: item.availability ?? undefined,
+    isPinned: item.isPinned,
+    viewerVoted: item.viewerVoted,
+    viewerFollowed: item.viewerFollowed,
+  };
 }
 
 function IdeaCard({ idea, voted, followed, onVote, onOpen, onFollow }: { idea: Idea; voted: boolean; followed: boolean; onVote: () => void; onOpen: () => void; onFollow: () => void }) {
@@ -172,7 +92,7 @@ function IdeaCard({ idea, voted, followed, onVote, onOpen, onFollow }: { idea: I
       <button className="idea-main" onClick={onOpen} aria-label={`Open idea: ${idea.title}`}>
         <div className="row-heading"><h3>{idea.title}</h3>{idea.isPinned && <span className="pin-mark">Pinned</span>}</div>
         <p>{idea.description}</p>
-        <div className="idea-meta"><span className={`status status-${idea.status.toLowerCase().replaceAll(" ", "-")}`}><span aria-hidden="true">{statusIcon(idea.status)}</span>{idea.status}</span><span>{idea.category}</span><span>{idea.comments.length} {idea.comments.length === 1 ? "comment" : "comments"}</span><span>{idea.submitted}</span></div>
+        <div className="idea-meta"><span className={`status status-${idea.status.toLowerCase().replaceAll(" ", "-")}`}><span aria-hidden="true">{statusIcon(idea.status)}</span>{idea.status}</span><span>{idea.category}</span><span>{idea.commentCount ?? idea.comments.length} {(idea.commentCount ?? idea.comments.length) === 1 ? "comment" : "comments"}</span><span>{idea.submitted}</span></div>
       </button>
       <button className={`follow-button ${followed ? "is-followed" : ""}`} onClick={onFollow} aria-label={`${followed ? "Unfollow" : "Follow"} ${idea.title}`} aria-pressed={followed}>{followed ? "Following" : "Follow"}</button>
     </article>
@@ -185,7 +105,8 @@ function Modal({ children, onClose, label }: { children: React.ReactNode; onClos
 
 export default function Home() {
   const [view, setView] = useState<View>(initialView);
-  const [ideas, setIdeas] = useState<Idea[]>(seededIdeas);
+  const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [shippedIdeas, setShippedIdeas] = useState<Idea[]>([]);
   const [votedIds, setVotedIds] = useState<string[]>([]);
   const [followedIds, setFollowedIds] = useState<string[]>([]);
   const [submittedIds, setSubmittedIds] = useState<string[]>([]);
@@ -198,28 +119,42 @@ export default function Home() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [notice, setNotice] = useState("");
-  const [participantId, setParticipantId] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
-    const hydrate = () => {
-      const saved = window.localStorage.getItem("yourbreath-community-state");
-      if (saved) {
-        try {
-          const state = JSON.parse(saved);
-          setVotedIds(state.votedIds ?? []); setFollowedIds(state.followedIds ?? []); setSubmittedIds(state.submittedIds ?? []); setIdeas(state.ideas ?? seededIdeas); setParticipantId(state.participantId ?? makeParticipantId());
-        } catch { setParticipantId(makeParticipantId()); }
-      } else setParticipantId(makeParticipantId());
-    };
-    const timer = window.setTimeout(hydrate, 0);
-    return () => window.clearTimeout(timer);
+    fetchSession().then((session) => setSignedIn(session.authenticated)).catch(() => setApiError("Community session could not be loaded. You can still retry below."));
   }, []);
 
   useEffect(() => {
-    if (!participantId) return;
-    window.localStorage.setItem("yourbreath-community-state", JSON.stringify({ participantId, votedIds, followedIds, submittedIds, ideas }));
-  }, [participantId, votedIds, followedIds, submittedIds, ideas]);
+    let cancelled = false;
+    fetchSuggestions({ query, category, status, sort }).then(({ suggestions }) => {
+      if (cancelled) return;
+      const mapped = suggestions.map(mapSuggestion);
+      setIdeas(mapped.filter((idea) => !idea.isShipped));
+      setShippedIdeas(mapped.filter((idea) => idea.isShipped));
+      setVotedIds(mapped.filter((idea) => idea.viewerVoted).map((idea) => idea.id));
+      setFollowedIds(mapped.filter((idea) => idea.viewerFollowed).map((idea) => idea.id));
+      setApiError("");
+    }).catch(() => { if (!cancelled) setApiError("The Community ideas could not be loaded."); }).finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [query, category, status, sort]);
 
-  const allIdeas = useMemo(() => [...ideas, ...shipped], [ideas]);
+  useEffect(() => {
+    fetchActivity().then(({ activity }) => {
+      setVotedIds(activity.votes.map((item) => item.id));
+      setFollowedIds(activity.follows.map((item) => item.id));
+      setSubmittedIds(activity.submissions.map((item) => item.id));
+    }).catch(() => undefined);
+  }, [signedIn]);
+
+  const activeIdeaId = activeIdea?.id;
+  useEffect(() => {
+    if (!activeIdeaId) return;
+    fetchSuggestion(activeIdeaId).then(({ suggestion }) => setActiveIdea((current) => current?.id === activeIdeaId ? { ...current, comments: (suggestion.comments ?? []).map((item) => ({ id: item.id, author: item.author, body: item.body, date: item.date })) } : current)).catch(() => undefined);
+  }, [activeIdeaId]);
+
+  const allIdeas = useMemo(() => [...ideas, ...shippedIdeas], [ideas, shippedIdeas]);
   const filteredIdeas = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const result = ideas.filter((idea) => {
@@ -230,25 +165,57 @@ export default function Home() {
   }, [ideas, query, category, status, sort]);
 
   function announce(message: string) { setNotice(message); window.setTimeout(() => setNotice(""), 2600); }
-  function vote(id: string) {
+  async function vote(id: string) {
     const already = votedIds.includes(id);
     setVotedIds((current) => already ? current.filter((item) => item !== id) : [...current, id]);
     setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, votes: Math.max(0, idea.votes + (already ? -1 : 1)) } : idea));
-    announce(already ? "Vote removed" : "Vote added — thank you for helping shape YourBreath");
+    try {
+      const result = await apiToggleVote(id);
+      setVotedIds((current) => result.voted ? [...new Set([...current, id])] : current.filter((item) => item !== id));
+      setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, votes: result.votes, viewerVoted: result.voted } : idea));
+      setActiveIdea((current) => current?.id === id ? { ...current, votes: result.votes, viewerVoted: result.voted } : current);
+      announce(result.voted ? "Vote added — thank you for helping shape YourBreath" : "Vote removed");
+    } catch (error) {
+      setVotedIds((current) => already ? [...current, id] : current.filter((item) => item !== id));
+      setIdeas((current) => current.map((idea) => idea.id === id ? { ...idea, votes: Math.max(0, idea.votes + (already ? 1 : -1)) } : idea));
+      announce(error instanceof Error ? error.message : "Vote could not be saved");
+    }
   }
-  function follow(id: string) {
-    const already = followedIds.includes(id);
-    setFollowedIds((current) => already ? current.filter((item) => item !== id) : [...current, id]);
-    if (!already && !signedIn) setShowSignIn(true); else announce(already ? "You no longer follow this idea" : "You’re following this idea on this device");
+  async function follow(id: string) {
+    if (!signedIn) { setShowSignIn(true); return; }
+    try {
+      const result = await apiToggleFollow(id);
+      setFollowedIds((current) => result.followed ? [...new Set([...current, id])] : current.filter((item) => item !== id));
+      setActiveIdea((current) => current?.id === id ? { ...current, viewerFollowed: result.followed } : current);
+      announce(result.followed ? "You’re following this idea across devices" : "You no longer follow this idea");
+    } catch (error) { announce(error instanceof Error ? error.message : "Follow could not be saved"); }
   }
-  function submitIdea(event: FormEvent<HTMLFormElement>) {
+  async function submitIdea(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const title = String(data.get("title") ?? "").trim();
     const description = String(data.get("description") ?? "").trim();
-    const newIdea: Idea = { id: `local-${Date.now()}`, title, description, category: String(data.get("category") ?? "Other"), status: "New", votes: 1, submitted: "Just now", author: "You · on this device", comments: [] };
     if (!title || !description) return;
-    setIdeas((current) => [newIdea, ...current]); setSubmittedIds((current) => [...current, newIdea.id]); setShowSuggest(false); setActiveIdea(newIdea); announce("Thanks — your idea is in");
+    try {
+      const result = await apiCreateSuggestion({ title, description, category: String(data.get("category") ?? "Other") });
+      setSubmittedIds((current) => [...current, result.id]);
+      setShowSuggest(false);
+      announce("Thanks — your idea is in");
+      setQuery("");
+      const refreshed = await fetchSuggestions({ sort });
+      const mapped = refreshed.suggestions.map(mapSuggestion);
+      setIdeas(mapped.filter((idea) => !idea.isShipped));
+      setShippedIdeas(mapped.filter((idea) => idea.isShipped));
+    } catch (error) { announce(error instanceof Error ? error.message : "Idea could not be saved"); }
+  }
+  async function commentOnIdea(body: string) {
+    if (!activeIdea) return;
+    try {
+      await apiCreateComment(activeIdea.id, body);
+      const refreshed = await fetchSuggestion(activeIdea.id);
+      setActiveIdea((current) => current?.id === activeIdea.id ? { ...current, comments: (refreshed.suggestion.comments ?? []).map((item) => ({ id: item.id, author: item.author, body: item.body, date: item.date })) } : current);
+      announce("Comment added");
+    } catch (error) { announce(error instanceof Error ? error.message : "Comment could not be saved"); }
   }
   function navigate(next: View) { setView(next); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
@@ -259,18 +226,18 @@ export default function Home() {
     <main className="main-content">
       {view === "ideas" && <>
         <section className="intro-section"><div><p className="eyebrow">A calmer way to be heard</p><h1>Help shape<br /><span>YourBreath</span></h1><p className="intro-copy">Suggest what you’d love to see next, vote for the ideas that matter to you, and follow what we’re building.</p><div className="intro-actions"><button className="button button-primary" onClick={() => setShowSuggest(true)}>Suggest an idea <span aria-hidden="true">↗</span></button><button className="text-button" onClick={() => navigate("roadmap")}>See roadmap <span aria-hidden="true">→</span></button></div><p className="privacy-line"><span aria-hidden="true">✦</span> Participate without an account. Sign in only when you want to keep activity across devices.</p></div><div className="breath-orbit" aria-label="A quiet visual reminder of the YourBreath breathing rhythm"><div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" /><div className="orbit-core"><span>your<br />voice</span></div><span className="orbit-label orbit-label-top">listen</span><span className="orbit-label orbit-label-bottom">build gently</span></div></section>
-        <section className="ideas-section" id="ideas"><div className="section-heading"><div><p className="eyebrow">Community ideas</p><h2>What should we make easier?</h2></div><span className="result-count">{filteredIdeas.length} ideas</span></div><div className="toolbar"><label className="search-field"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search ideas" aria-label="Search ideas" /></label><div className="filter-group"><select value={sort} onChange={(event) => setSort(event.target.value as SortMode)} aria-label="Sort ideas"><option>Top</option><option>Trending</option><option>Newest</option></select><select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filter by category">{categories.map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by status"><option>All statuses</option>{statuses.map((item) => <option key={item}>{item}</option>)}</select></div></div><div className="ideas-list">{filteredIdeas.length ? filteredIdeas.map((idea) => <IdeaCard key={idea.id} idea={idea} voted={votedIds.includes(idea.id)} followed={followedIds.includes(idea.id)} onVote={() => vote(idea.id)} onOpen={() => setActiveIdea(idea)} onFollow={() => follow(idea.id)} />) : <div className="empty-state"><span>◌</span><h3>No ideas match that search</h3><p>Try a different phrase or suggest a new idea.</p><button className="text-button" onClick={() => { setQuery(""); setCategory("All categories"); setStatus("All statuses"); }}>Clear filters</button></div>}</div></section>
+        <section className="ideas-section" id="ideas"><div className="section-heading"><div><p className="eyebrow">Community ideas</p><h2>What should we make easier?</h2></div><span className="result-count">{filteredIdeas.length} ideas</span></div><div className="toolbar"><label className="search-field"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search ideas" aria-label="Search ideas" /></label><div className="filter-group"><select value={sort} onChange={(event) => setSort(event.target.value as SortMode)} aria-label="Sort ideas"><option>Top</option><option>Trending</option><option>Newest</option></select><select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filter by category">{categories.map((item) => <option key={item}>{item}</option>)}</select><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by status"><option>All statuses</option>{statuses.map((item) => <option key={item}>{item}</option>)}</select></div></div><div className="ideas-list">{loading ? <div className="empty-state"><span>◌</span><h3>Loading Community ideas…</h3><p>Connecting to the public Community service.</p></div> : apiError ? <div className="empty-state"><span>!</span><h3>{apiError}</h3><button className="text-button" onClick={() => window.location.reload()}>Retry</button></div> : filteredIdeas.length ? filteredIdeas.map((idea) => <IdeaCard key={idea.id} idea={idea} voted={votedIds.includes(idea.id)} followed={followedIds.includes(idea.id)} onVote={() => vote(idea.id)} onOpen={() => setActiveIdea(idea)} onFollow={() => follow(idea.id)} />) : <div className="empty-state"><span>◌</span><h3>No ideas match that search</h3><p>Try a different phrase or suggest a new idea.</p><button className="text-button" onClick={() => { setQuery(""); setCategory("All categories"); setStatus("All statuses"); }}>Clear filters</button></div>}</div></section>
         <section className="participation-band"><div><p className="eyebrow">A small privacy promise</p><h2>YourBreath stays personal.<br />Community stays separate.</h2></div><p>Your breathing sessions, HealthKit information and progress data never come here. Community only stores the ideas, votes and follows you choose to share.</p><a href="/privacy">Read the Community Privacy Notice <span aria-hidden="true">→</span></a></section>
       </>}
       {view === "roadmap" && <Roadmap ideas={ideas} onOpen={setActiveIdea} />}
-      {view === "shipped" && <Shipped ideas={shipped} onOpen={setActiveIdea} />}
+      {view === "shipped" && <Shipped ideas={shippedIdeas} onOpen={setActiveIdea} />}
       {view === "activity" && <Activity ideas={allIdeas} votedIds={votedIds} followedIds={followedIds} submittedIds={submittedIds} signedIn={signedIn} onSignIn={() => setShowSignIn(true)} onOpen={setActiveIdea} />}
     </main>
     <footer className="site-footer"><div className="footer-brand"><span className="brand-mark" aria-hidden="true"><span /><span /><span /></span><span>YourBreath <em>Community</em></span></div><p>Made to help a calm app keep getting better.</p><div className="footer-links"><a href="https://yourbreath.app">YourBreath app</a><a href="/privacy">Privacy Notice</a><a href="/terms">Terms</a><a href="/admin">Admin</a></div></footer>
     {notice && <div className="toast" role="status"><span aria-hidden="true">✓</span>{notice}</div>}
-    {activeIdea && <IdeaDetail idea={activeIdea} voted={votedIds.includes(activeIdea.id)} followed={followedIds.includes(activeIdea.id)} signedIn={signedIn} onClose={() => setActiveIdea(null)} onVote={() => vote(activeIdea.id)} onFollow={() => follow(activeIdea.id)} onSignIn={() => setShowSignIn(true)} onComment={(body) => { const next = { id: `comment-${Date.now()}`, author: "You", body, date: "Just now" }; setIdeas((current) => current.map((idea) => idea.id === activeIdea.id ? { ...idea, comments: [...idea.comments, next] } : idea)); setActiveIdea({ ...activeIdea, comments: [...activeIdea.comments, next] }); }} />}
+    {activeIdea && <IdeaDetail idea={activeIdea} voted={votedIds.includes(activeIdea.id)} followed={followedIds.includes(activeIdea.id)} signedIn={signedIn} onClose={() => setActiveIdea(null)} onVote={() => vote(activeIdea.id)} onFollow={() => follow(activeIdea.id)} onSignIn={() => setShowSignIn(true)} onComment={commentOnIdea} />}
     {showSuggest && <SuggestModal ideas={ideas} onClose={() => setShowSuggest(false)} onSubmit={submitIdea} />}
-    {showSignIn && <Modal label="Sign in to Community" onClose={() => setShowSignIn(false)}><div className="modal-icon">✦</div><p className="eyebrow">Optional, always</p><h2>Keep your Community close</h2><p className="modal-copy">YourBreath itself doesn’t require an account. Community sign-in is only used to keep track of your ideas, votes and follows across devices.</p><button className="button button-dark full" onClick={() => { setSignedIn(true); setShowSignIn(false); announce("You’re signed in to Community"); }}>Sign in with Apple <span aria-hidden="true">→</span></button><button className="text-button center" onClick={() => setShowSignIn(false)}>Not now</button><p className="modal-footnote">In this preview, sign-in is represented locally. Production identity will use Sign in with Apple.</p></Modal>}
+    {showSignIn && <Modal label="Sign in to Community" onClose={() => setShowSignIn(false)}><div className="modal-icon">✦</div><p className="eyebrow">Optional, always</p><h2>Keep your Community close</h2><p className="modal-copy">YourBreath itself doesn’t require an account. Community sign-in uses a secure Sign in with Apple flow so your activity can follow you across devices.</p><button className="button button-dark full" onClick={() => signInWithApple(window.location.pathname)}>Sign in with Apple <span aria-hidden="true">→</span></button><button className="text-button center" onClick={() => setShowSignIn(false)}>Not now</button><p className="modal-footnote">Your Apple credentials are handled by Apple; Community receives only the identity details needed for your profile.</p></Modal>}
   </div>;
 }
 
@@ -285,7 +252,7 @@ function Shipped({ ideas, onOpen }: { ideas: Idea[]; onOpen: (idea: Idea) => voi
 
 function Activity({ ideas, votedIds, followedIds, submittedIds, signedIn, onSignIn, onOpen }: { ideas: Idea[]; votedIds: string[]; followedIds: string[]; submittedIds: string[]; signedIn: boolean; onSignIn: () => void; onOpen: (idea: Idea) => void }) {
   const local = ideas.filter((idea) => votedIds.includes(idea.id) || followedIds.includes(idea.id) || submittedIds.includes(idea.id));
-  return <section className="page-section activity-page"><div className="page-heading"><p className="eyebrow">Your corner of Community</p><h1>My Activity</h1><p>{signedIn ? "Your Community activity is ready to follow across devices." : "Here’s what you’ve done on this device. Sign in when you want to keep it across devices."}</p></div><div className="activity-banner"><div className="activity-orb">✦</div><div><strong>{signedIn ? "Signed in to Community" : "Activity on this device"}</strong><p>{signedIn ? "Meaningful idea updates can follow you wherever you use Community." : "Your ideas and votes are stored locally in this browser. They are not synchronized."}</p></div>{!signedIn && <button className="button button-dark" onClick={onSignIn}>Sign in to Community</button>}</div><h2 className="subheading">{local.length ? "Your recent activity" : "Your activity will appear here"}</h2>{local.length ? <div className="activity-list">{local.map((idea) => <button key={idea.id} onClick={() => onOpen(idea)}><span className="activity-symbol">{submittedIds.includes(idea.id) ? "✦" : followedIds.includes(idea.id) ? "♡" : "▲"}</span><span><strong>{idea.title}</strong><small>{submittedIds.includes(idea.id) ? "Suggested by you" : followedIds.includes(idea.id) ? "Following" : "Voted"}</small></span><span aria-hidden="true">↗</span></button>)}</div> : <div className="empty-state soft"><span>◌</span><h3>Start with a vote or a thought</h3><p>There’s no account wall here. Browse ideas and take part when something resonates.</p></div>}</section>;
+  return <section className="page-section activity-page"><div className="page-heading"><p className="eyebrow">Your corner of Community</p><h1>My Activity</h1><p>{signedIn ? "Your Community activity is ready to follow across devices." : "Anonymous activity is kept for this browser. Sign in when you want to keep it across devices."}</p></div><div className="activity-banner"><div className="activity-orb">✦</div><div><strong>{signedIn ? "Signed in to Community" : "Activity on this browser"}</strong><p>{signedIn ? "Meaningful idea updates can follow you wherever you use Community." : "Your activity is stored by the Community service using an opaque browser identifier; it is not a profile or a browser fingerprint."}</p></div>{!signedIn && <button className="button button-dark" onClick={onSignIn}>Sign in to Community</button>}</div><h2 className="subheading">{local.length ? "Your recent activity" : "Your activity will appear here"}</h2>{local.length ? <div className="activity-list">{local.map((idea) => <button key={idea.id} onClick={() => onOpen(idea)}><span className="activity-symbol">{submittedIds.includes(idea.id) ? "✦" : followedIds.includes(idea.id) ? "♡" : "▲"}</span><span><strong>{idea.title}</strong><small>{submittedIds.includes(idea.id) ? "Suggested by you" : followedIds.includes(idea.id) ? "Following" : "Voted"}</small></span><span aria-hidden="true">↗</span></button>)}</div> : <div className="empty-state soft"><span>◌</span><h3>Start with a vote or a thought</h3><p>There’s no account wall here. Browse ideas and take part when something resonates.</p></div>}</section>;
 }
 
 function IdeaDetail({ idea, voted, followed, signedIn, onClose, onVote, onFollow, onSignIn, onComment }: { idea: Idea; voted: boolean; followed: boolean; signedIn: boolean; onClose: () => void; onVote: () => void; onFollow: () => void; onSignIn: () => void; onComment: (body: string) => void }) {
