@@ -53,3 +53,23 @@ The first four enable Sign in with Apple; the last one selects the verified
 Apple subject allowed to administer Community. Until those secrets are set and
 an Apple callback is tested, the public anonymous feedback loop can run but
 sign-in and admin remain intentionally unavailable.
+
+Configure the Apple Services ID with this exact return URL before testing:
+
+`https://feedback.yourbreath.app/api/auth/apple/callback`
+
+Set the Worker secrets from a terminal in this directory; Wrangler reads each
+value interactively and does not write it to the repository:
+
+```sh
+npx wrangler secret put APPLE_TEAM_ID --name yourbreath-community
+npx wrangler secret put APPLE_KEY_ID --name yourbreath-community
+npx wrangler secret put APPLE_CLIENT_ID --name yourbreath-community
+npx wrangler secret put APPLE_PRIVATE_KEY --name yourbreath-community < /secure/path/AuthKey_XXXXXXXXXX.p8
+npx wrangler secret put COMMUNITY_ADMIN_APPLE_SUBJECT --name yourbreath-community
+```
+
+The Cloudflare token used for these commands needs permission to edit Worker
+secrets. After configuration, `/api/auth/apple/start` should redirect to
+Apple, and a real Apple callback should be used to verify the user session and
+the server-side admin role.
