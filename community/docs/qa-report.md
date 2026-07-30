@@ -12,9 +12,14 @@
 - Local D1 migration smoke test — passed: baseline plus `0002_production_backend.sql` created all 15 expected tables and seeded 10 stable suggestions.
 - Local Worker API smoke test — passed: `GET /api/session` returned anonymous session state and `GET /api/suggestions` returned the seeded public ideas.
 
-## Browser checks
+## Browser and live checks
 
-Agent preview was opened at the internal preview URL with the cloud browser. The root title was `YourBreath Community — Help shape YourBreath`, the first viewport rendered meaningful content, and the application produced no app-related console errors. Browser-extension metadata warnings were filtered as environment noise.
+The public Community URL was opened with the browser. The root title was
+`YourBreath Community — Help shape YourBreath`, the first viewport rendered
+meaningful content, and the visible “Under construction” notice was present.
+The live marketing site also exposed one visible link labelled `Visit
+YourBreath Community` pointing to `https://feedback.yourbreath.app/`.
+Browser-extension metadata warnings were filtered as environment noise.
 
 Verified source/API paths:
 
@@ -38,8 +43,13 @@ Verified source/API paths:
 
 ## Remaining release gates
 
-The current Cloudflare token authenticates Wrangler account identity but is not
-authorized for D1 API access (`7403`), so the remote migration and Worker deploy
-could not yet be executed from this shell. Apple Worker secrets are also not
-present in the local environment. These are provider configuration gates, not
-reasons to weaken the implementation or place secrets in the repository.
+GitHub Actions run `30542911232` completed successfully for the merged commit;
+it applied the verified remote D1 migration and deployed the Worker. The local
+Cloudflare token still authenticates Wrangler account identity but is not
+authorized for D1 API access (`7403`), so local remote administration remains
+unavailable. Live checks returned 200 for `/`, `/roadmap`, `/shipped`,
+`/privacy` and `/terms`; anonymous `/api/session` and `/api/suggestions` also
+returned 200. Apple Worker secrets are not configured: the Apple start endpoint
+currently returns 503 and the admin overview correctly returns 403 for an
+anonymous caller. These are provider configuration gates, not reasons to weaken
+the implementation or place secrets in the repository.
