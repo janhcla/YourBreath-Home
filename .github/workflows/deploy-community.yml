@@ -1,0 +1,40 @@
+name: Deploy YourBreath Community
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "community/**"
+      - ".github/workflows/deploy-community.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: community
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: community/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test and build
+        run: npm test
+
+      - name: Deploy Worker
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

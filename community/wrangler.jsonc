@@ -1,0 +1,20 @@
+{
+  "name": "yourbreath-community",
+  "account_id": "72605c9530a9fb0db9108aecc3400394",
+  "compatibility_date": "2026-07-30",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yourbreath-community",
+      "database_id": "08c6c160-c7da-4c31-a656-25ae3e354c76"
+    }
+  ],
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "feedback.yourbreath.app",
+      "custom_domain": true
+    }
+  ]
+}
