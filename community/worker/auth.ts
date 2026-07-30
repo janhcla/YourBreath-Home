@@ -43,8 +43,9 @@ export function buildAppleAuthorizeUrl(request: Request, clientId: string, state
 
 async function appleClientSecret(env: Env) {
   const config = requireAppleConfig(env);
-  const key = await importPKCS8(config.privateKey.replace(/\\n/g, "\n"), "RS256");
-  return new SignJWT({}).setProtectedHeader({ alg: "RS256", kid: config.keyId, typ: "JWT" }).setIssuer(config.teamId).setSubject(config.clientId).setAudience(APPLE_ISSUER).setIssuedAt().setExpirationTime("5m").sign(key);
+  // Apple Sign in with Apple .p8 keys are EC keys and require ES256.
+  const key = await importPKCS8(config.privateKey.replace(/\\n/g, "\n"), "ES256");
+  return new SignJWT({}).setProtectedHeader({ alg: "ES256", kid: config.keyId, typ: "JWT" }).setIssuer(config.teamId).setSubject(config.clientId).setAudience(APPLE_ISSUER).setIssuedAt().setExpirationTime("5m").sign(key);
 }
 
 export async function startAppleSignIn(request: Request, env: Env) {
