@@ -6,7 +6,7 @@ The migrated public Worker is:
 
 `https://feedback.yourbreath.app`
 
-The Cloudflare Worker is named `yourbreath-community` and is bound to the
+The Cloudflare Worker is named `yourbreath-community` 2qw1and is bound to the
 European D1 database `yourbreath-community` through `DB`.
 
 ## DNS migration record
@@ -73,3 +73,27 @@ The Cloudflare token used for these commands needs permission to edit Worker
 secrets. After configuration, `/api/auth/apple/start` should redirect to
 Apple, and a real Apple callback should be used to verify the user session and
 the server-side admin role.
+
+## Bootstrap the first admin safely
+
+Set only the first four secrets initially. Open the Community in a browser,
+choose **Sign in with Apple**, and complete one login. This creates your
+profile as a normal `user` profile. Then inspect only the Apple identities in
+the remote D1 database from the same terminal:
+
+```sh
+npx wrangler d1 execute yourbreath-community --remote --config wrangler.jsonc \
+  --command "SELECT email, apple_subject, role FROM profiles WHERE apple_subject IS NOT NULL;"
+```
+
+Identify your own row locally in the terminal and copy its `apple_subject`
+value into the fifth secret. Never paste the query output into chat or commit
+it:
+
+```sh
+npx wrangler secret put COMMUNITY_ADMIN_APPLE_SUBJECT --name yourbreath-community
+```
+
+Finally sign out of Community and sign in with Apple again. The callback then
+updates that profile to `role = 'admin'`. The admin page and
+`/api/admin/overview` can now be tested with that browser session.
