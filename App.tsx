@@ -24,7 +24,7 @@ const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
 const APP_ICON_SRC = "/app-icon.png";
 const HOME_SCREENSHOT_SRC = "/screenshots/home.jpg";
 const SESSION_SCREENSHOT_SRC = "/screenshots/box-breathing.jpg";
-const SUMMARY_SCREENSHOT_SRC = "/screenshots/session-complete.jpg";
+const PROGRAMS_SCREENSHOT_SRC = "/screenshots/session-complete.jpg";
 const PROGRESS_SCREENSHOT_SRC = "/screenshots/progress.jpg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
 const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
@@ -766,14 +766,14 @@ const WatchShowcase = () => (
           <img src={SESSION_SCREENSHOT_SRC} alt="YourBreath guided Box Breathing session" loading="lazy" />
         </div>
         <div className="phone-shot w-[44%] rotate-3 translate-y-8">
-          <img src={SUMMARY_SCREENSHOT_SRC} alt="YourBreath completed breathing session summary" loading="lazy" />
+          <img src={PROGRAMS_SCREENSHOT_SRC} alt="YourBreath guided 14-day programs" loading="lazy" />
         </div>
       </div>
       
       <div className="lg:w-1/2">
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">iPhone and Apple Watch work quietly together</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">A practice that can grow with you</h2>
         <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-           Install the watchOS app alongside the iPhone app. Routines, Premium status, and haptic settings stay in sync, so you can start breathing from your watch when your phone is away.
+           Start with a short, guided breath. When you are ready, private progress insights and optional two-week programs give your practice a calm next step.
         </p>
         <AppStoreCTA
           className="inline-block"
@@ -1108,7 +1108,7 @@ const SEOView = ({
           {[
             [HOME_SCREENSHOT_SRC, "YourBreath home screen"],
             [SESSION_SCREENSHOT_SRC, "Active Box Breathing session"],
-            [SUMMARY_SCREENSHOT_SRC, "Completed session summary"],
+            [PROGRAMS_SCREENSHOT_SRC, "Guided 14-day programs"],
             [PROGRESS_SCREENSHOT_SRC, "Private progress overview"]
           ].map(([src, alt]) => (
             <div className="phone-shot" key={src}>
