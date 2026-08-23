@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Wind, 
-  Watch, 
-  ShieldCheck, 
-  Zap, 
-  BarChart3, 
-  CheckCircle2, 
-  Menu, 
-  X,
-  Download,
-  Play,
-  Info,
-  Lock,
-  FileText,
-  HelpCircle,
-  ArrowRight,
-  Heart
-} from 'lucide-react';
+import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right.mjs';
+import BarChart3 from 'lucide-react/dist/esm/icons/chart-column.mjs';
+import CheckCircle2 from 'lucide-react/dist/esm/icons/circle-check.mjs';
+import Download from 'lucide-react/dist/esm/icons/download.mjs';
+import FileText from 'lucide-react/dist/esm/icons/file-text.mjs';
+import Heart from 'lucide-react/dist/esm/icons/heart.mjs';
+import HelpCircle from 'lucide-react/dist/esm/icons/circle-question-mark.mjs';
+import Info from 'lucide-react/dist/esm/icons/info.mjs';
+import Lock from 'lucide-react/dist/esm/icons/lock.mjs';
+import Menu from 'lucide-react/dist/esm/icons/menu.mjs';
+import Play from 'lucide-react/dist/esm/icons/play.mjs';
+import ShieldCheck from 'lucide-react/dist/esm/icons/shield-check.mjs';
+import Watch from 'lucide-react/dist/esm/icons/watch.mjs';
+import Wind from 'lucide-react/dist/esm/icons/wind.mjs';
+import X from 'lucide-react/dist/esm/icons/x.mjs';
+import Zap from 'lucide-react/dist/esm/icons/zap.mjs';
 
 // --- Types ---
 type ViewState = 'home' | 'about' | 'press' | 'apple-watch' | 'private-breathing-app' | 'no-subscription' | 'breathing-techniques' | 'breathwork-app' | 'mindfulness-app' | 'meditation-app' | 'privacy' | 'terms' | 'support';

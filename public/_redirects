@@ -1,4 +1,8 @@
 /app-store https://apps.apple.com/app/id6754709063 302
+/sitemap-google.xml /sitemap.xml 301
+/sitemap-index.xml /sitemap.xml 301
+/sitemap_index.xml /sitemap.xml 301
+/sitemap.txt /sitemap.xml 301
 /sitemap.xml/ /sitemap.xml 200
 /about/ /about/index.html 200
 /press/ /press/index.html 200
