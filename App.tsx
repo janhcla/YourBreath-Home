@@ -22,10 +22,10 @@ type Technique = 'box' | 'fourSevenEight' | 'coherent';
 
 const APP_STORE_BADGE_SRC = "/app-store-badge.svg";
 const APP_ICON_SRC = "/app-icon.png";
-const HOME_SCREENSHOT_SRC = "/screenshots/home.jpg";
-const SESSION_SCREENSHOT_SRC = "/screenshots/box-breathing.jpg";
-const PROGRAMS_SCREENSHOT_SRC = "/screenshots/session-complete.jpg";
-const PROGRESS_SCREENSHOT_SRC = "/screenshots/progress.jpg";
+const HOME_SCREENSHOT_SRC = "/screenshots/home-2026.jpg";
+const SESSION_SCREENSHOT_SRC = "/screenshots/box-breathing-2026.jpg";
+const PROGRAMS_SCREENSHOT_SRC = "/screenshots/programs-2026.jpg";
+const PROGRESS_SCREENSHOT_SRC = "/screenshots/progress-2026.jpg";
 const SUPPORT_EMAIL = "aloe.08.slaenge@icloud.com";
 const APP_STORE_URL = "https://apps.apple.com/app/id6754709063";
 
@@ -758,7 +758,7 @@ const BreathingTechniques = () => (
   </section>
 );
 
-const WatchShowcase = () => (
+const PracticeShowcase = () => (
   <section className="py-24 bg-dark-card border-y border-white/5 overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
       <div className="lg:w-1/2 relative flex justify-center gap-5 items-end">
@@ -1459,7 +1459,7 @@ const App = () => {
           />
           <Features />
           <BreathingTechniques />
-          <WatchShowcase />
+          <PracticeShowcase />
           <Premium />
           <PrivacyFeature onChangeView={navigateTo} />
           <CommunityCTA />
